@@ -21,7 +21,7 @@ function renderActivity(){
  const favorite=stats.favorites.includes(a.id);
  const choices=a.type==='comprehension'?'<div class="choices yes-no">'+a.options.map((o,i)=>btn(escapeHtml(o),'choice:'+i,'button choice-button')).join('')+'</div><div id="choiceResult" class="choice-result" role="status" aria-live="polite"></div>':'';
  let hints='';if(a.semanticHint)hints+=btn('Pista de significado','hintSemantic','button secondary');if(a.phoneticHint)hints+=btn('Pista de sonido','hintPhonetic','button secondary');if(a.expectedAnswer||a.answer)hints+=btn('Mostrar respuesta','answer','button secondary');if(a.syllables)hints+=btn('Ver apoyo','support','button secondary');
- setPage(`<div class="practice"><div class="practice-nav">${btn('← Volver','catalog','button compact-back')}<span class="pill">${route==='dailyPractice'?'Mi práctica':escapeHtml(TRACKS.find(x=>x[0]===a.track)?.[1])}</span><span class="activity-number">${idx+1}/${items.length}</span></div><div class="progressbar" aria-label="Progreso de la serie"><span style="width:${((idx+1)/items.length)*100}%"></span></div><section class="activity" aria-label="Ejercicio"><span class="eyebrow">${escapeHtml(a.goal)}</span><h1 class="word">${escapeHtml(a.prompt)}</h1><p class="instruction">${escapeHtml(a.instruction)}</p>${choices}<div class="core-controls">${btn('🔊 Escuchar','speak','button primary')}${btn('🎙 Grabar','record','button','id="recordButton"')}${btn('▶ Mi voz','playRecording','button','id="listenRecording" disabled')}</div><section class="compact-transcript" aria-label="Resultado de la voz"><div class="transcript-title">Lo que escuchó el dispositivo <span id="transcribeState" role="status" aria-live="polite"></span></div><p id="recognizedText" class="recognized-text">Aparecerá después de grabar.</p><div id="matchResult" class="match-result" hidden aria-live="polite"></div></section><div class="actions help-actions">${hints}</div><div id="clue" class="hintbox" hidden></div>${a.type==='dialogue'?'<label class="field">Respuesta escrita (opcional)<textarea id="answerText"></textarea></label>':''}<div id="feedback" class="feedback" role="status" aria-live="polite"></div><div class="finish-actions">${btn(favorite?'★ Guardado':'☆ Guardar','favorite','button compact')}${btn('✓ Practicado','complete','button secondary compact')}</div></section><div class="step-nav">${btn('← Anterior','prev','button',idx===0?'disabled':'')}${btn('Siguiente →','next','button primary')}</div></div>`);
+ setPage(`<div class="practice"><div class="practice-nav">${btn('← Volver','catalog','button compact-back')}<span class="pill">${route==='dailyPractice'?'Mi práctica':escapeHtml(TRACKS.find(x=>x[0]===a.track)?.[1])}</span><span class="activity-number">${idx+1}/${items.length}</span></div><div class="progressbar" aria-label="Progreso de la serie"><span style="width:${((idx+1)/items.length)*100}%"></span></div><section class="activity" aria-label="Ejercicio"><span class="eyebrow">${escapeHtml(a.goal)}</span><h1 class="word">${escapeHtml(a.prompt)}</h1><p class="instruction">${escapeHtml(a.instruction)}</p>${choices}<div class="core-controls">${btn('🔊 Escuchar','speak','button primary')}${btn('🎙 Grabar','record','button','id="recordButton"')}${btn('▶ Mi voz','playRecording','button','id="listenRecording" disabled')}</div><section class="compact-transcript" aria-label="Resultado de la voz"><div class="transcript-title">Lo que escuchó el dispositivo <span id="transcribeState" role="status" aria-live="polite"></span></div><p id="recognizedText" class="recognized-text">Aparecerá después de grabar.</p><div class="transcript-actions">${btn("🎤 Intentar transcripción","recognize","button secondary compact","id=\"retryTranscribe\"")}${btn("■ Detener escucha","stopRecognition","button compact","id=\"stopRecognition\" hidden")}</div><div id="matchResult" class="match-result" hidden aria-live="polite"></div></section><div class="actions help-actions">${hints}</div><div id="clue" class="hintbox" hidden></div>${a.type==='dialogue'?'<label class="field">Respuesta escrita (opcional)<textarea id="answerText"></textarea></label>':''}<div id="feedback" class="feedback" role="status" aria-live="polite"></div><div class="finish-actions">${btn(favorite?'★ Guardado':'☆ Guardar','favorite','button compact')}${btn('✓ Practicado','complete','button secondary compact')}</div></section><div class="step-nav">${btn('← Anterior','prev','button',idx===0?'disabled':'')}${btn('Siguiente →','next','button primary')}</div></div>`);
 }
 const BOARD=[['Sí','yes'],['No','no'],['Quiero agua','cup'],['Tengo hambre','food'],['Necesito ayuda','help'],['Quiero ir al baño','bath'],['Quiero descansar','bed'],['Me duele','pain'],['No entiendo','help'],['Hable más despacio','slow'],['Llame a mi familia','person'],['Repita, por favor','repeat']];
 function board(){if(session.active)pauseSession();route='board';setPage(`<div class="toolbar">${btn('← Inicio','home')}</div><span class="eyebrow">Comunicación cotidiana</span><h1 class="section-title">¿Qué necesitas decir?</h1><p class="muted">Pulsa una frase para mostrarla y escucharla. Puedes señalarla si la voz no está disponible.</p><div class="board">${BOARD.map(([txt,ico],i)=>`<button class="card clickable" data-phrase="${i}">${prefs.showIcons?svg(ico):''}<b>${escapeHtml(txt)}</b></button>`).join('')}</div><div class="card" style="margin-top:18px"><label for="customPhrase"><b>Mi propio mensaje</b></label><textarea id="customPhrase" maxlength="200" placeholder="Escribe una frase corta..."></textarea>${btn('🔊 Leer mensaje','customSpeak','button primary')}</div><p id="feedback" class="feedback" role="status" aria-live="polite"></p>`)}
@@ -30,7 +30,7 @@ function showClue(kind){const a=items[idx];let t=kind==='hintSemantic'?a.semanti
 function speak(textValue){if(!('speechSynthesis' in window)){notify('La lectura de voz no está disponible. Puedes leer o mostrar el texto.');return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(textValue);u.lang='es-NI';u.rate=Number(prefs.speechRate)||.9;const voices=speechSynthesis.getVoices();const v=voices.find(v=>v.lang==='es-NI')||voices.find(v=>v.lang.toLowerCase().startsWith('es'));if(v)u.voice=v;u.onerror=()=>notify('La voz no está disponible ahora. Puedes leer o mostrar el mensaje.');speechSynthesis.speak(u)}catch{notify('No se pudo reproducir la voz.')}}
 function stopAudio(){if(recording&&recording.state==='recording')recording.stop();if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if(recAudio){recAudio.pause();recAudio=null}if(audioURL){URL.revokeObjectURL(audioURL);audioURL=null}}
 async function record(){
- if(recording&&recording.state==='recording'){recording.stop();if(recognition){try{recognition.stop()}catch{}}return}
+ if(recording&&recording.state==='recording'){recording.stop();return}
  if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){notify('Este navegador no permite grabar. Puedes practicar sin grabarte.');return}
  try{
   stream=await navigator.mediaDevices.getUserMedia({audio:true});
@@ -42,11 +42,11 @@ async function record(){
    audioURL=URL.createObjectURL(new Blob(recChunks,{type:recording.mimeType||'audio/webm'}));
    const play=$('#listenRecording');if(play)play.disabled=false;
    const b=$('[data-action="record"]');if(b)b.textContent='🎙 Repetir';
-   if(recognition){try{recognition.stop()}catch{}}
    notify('Grabación lista. Puedes escuchar tu voz.');
   };
-  transcriptionFinal='';updateTranscript('',false);startRecognitionForRecording();
+  transcriptionFinal='';updateTranscript('',false);
   recording.start();
+  transcribeState('Grabando. Al terminar, toca «Intentar transcripción» y repite la frase.');
   const b=$('[data-action="record"]');if(b)b.textContent='■ Detener';
   notify('Grabando. Pulsa detener cuando termines.');
  }catch{notify('No se pudo acceder al micrófono. Puedes continuar sin grabarte.')}
@@ -77,27 +77,44 @@ function textSimilarity(expected,actual){
  return Math.round(100*prev[b.length]/Math.max(a.length,b.length));
 }
 function updateTranscript(value,final=false){
- const el=$('#recognizedText');if(el)el.textContent=value.trim()||'Esperando voz…';
+ const el=$('#recognizedText');if(el)el.textContent=value.trim()||'No se captaron palabras.';
  const result=$('#matchResult');if(!result)return;
- const exercise=items[idx];const comparable=['comunicacion','automatico','repeticion','motor_habla','disartria','lectura'].includes(exercise?.track);
- if(!final||!value.trim()||!comparable){result.hidden=true;return}
- const score=textSimilarity(exercise.ttsText||exercise.prompt,value);
+ const exercise=items[idx];
+ if(!final||!value.trim()||!exercise){result.hidden=true;return}
+ const expected=exercise.ttsText||exercise.expectedAnswer||exercise.answer||exercise.prompt;
+ const score=textSimilarity(expected,value);
  result.hidden=false;
- result.innerHTML=`<div class="score-line"><strong>Coincidencia del texto</strong><b>${score}%</b></div><div class="match-meter" role="img" aria-label="Coincidencia de texto: ${score} por ciento"><span style="width:${score}%"></span></div><small>No mide la pronunciación; el dispositivo también puede equivocarse.</small>`;
+ result.innerHTML=`<div class="score-line"><strong>Coincidencia del texto</strong><b>${score}%</b></div><div class="match-meter" role="img" aria-label="Coincidencia de texto: ${score} por ciento"><span style="width:${score}%"></span></div><small>Comparación automática del texto, no calificación clínica de pronunciación. En ejercicios abiertos puede no reflejar una respuesta correcta.</small>`;
+}
+function recognitionControls(active){
+ const retry=$('#retryTranscribe'),stop=$('#stopRecognition');
+ if(retry)retry.disabled=active;
+ if(stop)stop.hidden=!active;
 }
 function startRecognitionForRecording(){
- stopRecognition();transcriptionFinal='';
+ if(recording?.state==='recording'){transcribeState('Primero detén la grabación; luego intenta transcribir.');return}
+ stopRecognition();transcriptionFinal='';updateTranscript('',false);
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){transcribeState('Texto no disponible en este navegador.');return}
- if(!navigator.onLine){transcribeState('Texto no disponible sin conexión.');return}
+ if(!SR){transcribeState('Este navegador no admite transcripción. La grabación sigue disponible.');return}
+ if(!navigator.onLine){transcribeState('La transcripción de Chrome necesita conexión.');return}
  try{
-  const r=new SR();recognition=r;r.lang='es-NI';r.interimResults=true;r.continuous=false;
-  r.onstart=()=>transcribeState('Escuchando…');
-  r.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)transcriptionFinal+=t+' ';else interim+=t}updateTranscript(transcriptionFinal+interim,false)};
-  r.onerror=e=>transcribeState(e.error==='not-allowed'?'Transcripción no permitida.':'No se pudo transcribir esta vez.');
-  r.onend=()=>{if(recognition!==r)return;recognition=null;updateTranscript(transcriptionFinal,true);if(transcriptionFinal.trim())transcribeState('');else if($('#transcribeState')?.textContent==='Escuchando…')transcribeState('No se captaron palabras.');};
+  const r=new SR();recognition=r;r.lang='es-ES';r.interimResults=true;r.continuous=false;
+  let best='';
+  r.onstart=()=>{recognitionControls(true);transcribeState('Escuchando. Repite la frase ahora…')};
+  r.onresult=e=>{let interim='';for(let i=0;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)transcriptionFinal+=t+' ';else interim+=t}best=(transcriptionFinal+interim).trim()||best;updateTranscript(best,false)};
+  r.onerror=e=>{
+   const messages={'not-allowed':'Chrome no tiene permiso para reconocer voz. Revisa el micrófono.','audio-capture':'No se pudo abrir el micrófono.','network':'Error de conexión al servicio de transcripción.','no-speech':'No se detectó voz. Pulsa intentar de nuevo y habla al comenzar la escucha.','service-not-allowed':'El servicio de transcripción no está disponible.'};
+   transcribeState(messages[e.error]||'No se pudo transcribir. Intenta de nuevo.');
+  };
+  r.onend=()=>{
+   if(recognition!==r)return;
+   recognition=null;recognitionControls(false);
+   const text=transcriptionFinal.trim()||best.trim();
+   if(text){updateTranscript(text,true);transcribeState('Texto reconocido.');}
+   else if($('#transcribeState')?.textContent.startsWith('Escuchando'))transcribeState('No se detectó voz. Puedes intentar otra vez.');
+  };
   r.start();
- }catch{recognition=null;transcribeState('Texto no disponible; puedes escuchar tu grabación.')}
+ }catch{recognition=null;recognitionControls(false);transcribeState('Chrome no pudo iniciar la transcripción.');}
 }
 function recognizeSpeech(){startRecognitionForRecording()}
 function stopTranscription(){if(recognition){try{recognition.stop()}catch{}}}
