@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es-NI">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0" />
+  <title>ArquiVoz — Práctica Logopédica Complementaria</title>
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+  <div class="disclaimer-banner" role="alert">
+    <strong>Aviso Clínico:</strong> Herramienta de práctica complementaria. No sustituye la evaluación ni el tratamiento de un logopeda o fonoaudiólogo. Valide la dificultad y secuencia con su terapeuta.
+  </div>
+
+  <header>
+    <div class="brand">
+      <h1>ArquiVoz</h1>
+      <small id="profileBadge">Nivel: Intermedio · es-NI</small>
+    </div>
+    <div class="header-actions">
+      <span class="session-timer" id="sessionTimer" title="Tiempo de sesión activa">00:00</span>
+      <button class="btn btn-outline" id="btnOpenSettings" aria-label="Configuración">⚙️ Perfil</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Bloques Clínicos Principales -->
+    <nav class="nav-tabs" id="blockTabs" aria-label="Áreas de rehabilitación">
+      <button class="tab-btn active" data-block="calentamiento">1. Calentamiento</button>
+      <button class="tab-btn" data-block="voz">2. Voz y Volumen</button>
+      <button class="tab-btn" data-block="articulacion">3. Articulación</button>
+      <button class="tab-btn" data-block="lenguaje">4. Lenguaje y Léxico</button>
+      <button class="tab-btn" data-block="funcional">5. Funcional y Obra</button>
+      <button class="tab-btn" data-block="personalizados">★ Mis Frases</button>
+    </nav>
+
+    <!-- Sub-categorías del bloque activo -->
+    <div class="sub-nav" id="subCategoryNav"></div>
+
+    <!-- Área Principal del Ejercicio -->
+    <section class="card" id="exerciseCard">
+      <div class="clinical-goal" id="exGoal">Cargando módulo...</div>
+      <p class="instruction-text" id="exInstruction"></p>
+
+      <div class="prompt-display">
+        <div id="visualStimulus" class="visual-stimulus hidden"></div>
+        <div class="prompt-main" id="exPrompt">...</div>
+        <div class="prompt-syllables" id="exSyllables"></div>
+        <div id="fluencyTimerBox" class="hidden" style="margin-top:0.75rem;">
+          <div class="countdown-badge" id="fluencyCountdown">60s</div>
+          <button class="btn btn-primary" id="btnStartFluency" style="margin-top:0.5rem;">Iniciar Cronómetro 60s</button>
+        </div>
+      </div>
+
+      <!-- Pistas Progresivas (Evocación / Nominación) -->
+      <div id="hintsContainer" class="hidden" style="margin-bottom:0.85rem;">
+        <div class="controls-row">
+          <button class="btn btn-outline" id="btnHint1">💡 Pista Semántica</button>
+          <button class="btn btn-outline" id="btnHint2">🔤 Pista Fonética</button>
+        </div>
+        <p id="hintText" class="instruction-text" style="text-align:center; color:var(--accent); font-weight:700;"></p>
+      </div>
+
+      <!-- Controles de Audio Modelo -->
+      <div class="controls-row" id="ttsControls">
+        <button class="btn btn-primary" id="btnSpeakNormal">🔊 Escuchar Modelo</button>
+        <button class="btn btn-outline" id="btnSpeakSlow">🐢 Ritmo Lento</button>
+      </div>
+
+      <!-- Medidor Exclusivo de Voz (Solo activo en Bloque Voz para evitar conflicto de micrófono en Android) -->
+      <div class="meter-box hidden" id="voiceMeterBox">
+        <div style="display:flex; justify-content:space-between; font-size:0.88em; font-weight:700;">
+          <span>Intensidad Vocal</span>
+          <span id="sustainDuration">0.0 s</span>
+        </div>
+        <div class="meter-bar-bg">
+          <div class="meter-bar-fill" id="volumeFill"></div>
+        </div>
+        <button class="btn btn-record" id="btnToggleMeter" style="margin-top:0.75rem;">🎙️ Medir Voz Sostenida</button>
+      </div>
+
+      <!-- Grabación + Reconocimiento Continuo (Bloques Articulación, Lenguaje, Funcional) -->
+      <div id="speechPracticeBox">
+        <button class="btn btn-record" id="btnRecordSpeech">🎙️ Empezar a Hablar (Sin límite de pausas)</button>
+
+        <div class="feedback-box" id="feedbackBox">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <span class="asr-disclaimer">Referencia automática (orientativa, puede errar):</span>
+            <button class="btn btn-outline" id="btnPlayMyVoice" disabled style="min-height:36px; padding:0.35rem 0.7rem; font-size:0.85em;">▶️ Oír mi grabación</button>
+          </div>
+          <div class="transcript-output" id="transcriptText">Presione el botón rojo para hablar...</div>
+          <div id="structureFeedback" style="font-size:0.88em; color:var(--accent); margin-bottom:0.65rem;"></div>
+
+          <div style="font-weight:700; font-size:0.9em;">Autoevaluación Guiada (Escúchese y valore):</div>
+          <div class="self-eval-grid">
+            <button class="btn btn-success" data-eval="logrado">✓ Me salió claro</button>
+            <button class="btn btn-warn" data-eval="casi">~ Casi / Esfuerzo</button>
+            <button class="btn btn-outline" data-eval="repetir">↺ A repetir</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preguntas de Comprensión Sí/No u Órdenes -->
+      <div id="comprehensionBox" class="hidden">
+        <div class="controls-row" id="compOptions"></div>
+        <p id="compResult" style="text-align:center; font-weight:700; margin-top:0.5rem;"></p>
+      </div>
+
+      <div class="nav-footer">
+        <button class="btn btn-outline" id="btnPrevEx">← Anterior</button>
+        <span id="exCounter" style="align-self:center; font-size:0.9em; color:var(--text-muted);">1 / 1</span>
+        <button class="btn btn-primary" id="btnNextEx">Siguiente →</button>
+      </div>
+    </section>
+
+    <!-- Panel de Creación de Ejercicios Propios (Bloque Mis Frases) -->
+    <section class="card hidden" id="customEditorCard">
+      <h2 style="font-size:1.1em; margin-bottom:0.75rem;">Agregar Frase o Término Propio</h2>
+      <div class="form-group">
+        <label for="customPhraseInput">Frase, nombre de familiar o término técnico:</label>
+        <input type="text" id="customPhraseInput" class="form-control" placeholder="Ej. Revisemos los planos estructurales" />
+      </div>
+      <div class="form-group">
+        <label for="customSyllablesInput">Guía rítmica por sílabas (opcional):</label>
+        <input type="text" id="customSyllablesInput" class="form-control" placeholder="Ej. Re-vi-se-mos los pla-nos" />
+      </div>
+      <button class="btn btn-primary" id="btnSaveCustom" style="width:100%;">+ Guardar en Mi Lista</button>
+    </section>
+  </main>
+
+  <!-- Modal de Perfil, Accesibilidad y Exportación Clínica -->
+  <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 style="font-size:1.2em;">Perfil y Configuración Clínica</h2>
+        <button class="btn btn-outline" id="btnCloseSettings" style="min-height:38px;">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label for="cfgLocale">Variante de Español (Reconocimiento y Voz):</label>
+        <select id="cfgLocale" class="form-control">
+          <option value="es-NI">Español — Nicaragua (es-NI)</option>
+          <option value="es-MX">Español — México / Centroamérica (es-MX)</option>
+          <option value="es-US">Español — Latinoamérica (es-US)</option>
+          <option value="es-ES">Español — España (es-ES)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="cfgDifficulty">Nivel de Dificultad:</label>
+        <select id="cfgDifficulty" class="form-control">
+          <option value="1">Nivel 1 — Palabras y frases cortas (2-3 palabras)</option>
+          <option value="2" selected>Nivel 2 — Frases funcionales (4-6 palabras)</option>
+          <option value="3">Nivel 3 — Oraciones complejas y diálogo técnico</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="cfgTargetWords">Longitud objetivo en respuestas libres (palabras):</label>
+        <input type="number" id="cfgTargetWords" class="form-control" min="2" max="15" value="4" />
+      </div>
+
+      <div class="form-group">
+        <label for="cfgFontScale">Tamaño de Letra (Uso con lentes):</label>
+        <select id="cfgFontScale" class="form-control">
+          <option value="1">Normal (100%)</option>
+          <option value="1.15" selected>Grande (115%)</option>
+          <option value="1.3">Extra Grande (130%)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="cfgHighContrast" /> Activar Modo Alto Contraste (Negro / Amarillo)
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="cfgSpeechRate">Velocidad de Voz Guía:</label>
+        <select id="cfgSpeechRate" class="form-control">
+          <option value="0.75">Pausada (0.75x)</option>
+          <option value="0.9" selected>Natural Clara (0.90x)</option>
+          <option value="1.0">Normal (1.0x)</option>
+        </select>
+      </div>
+
+      <hr style="border-color:var(--border); margin:1rem 0;" />
+      <h3 style="font-size:1em; margin-bottom:0.5rem;">Progreso Local (100% Privado en este dispositivo)</h3>
+      <p id="progressSummary" class="instruction-text" style="margin-bottom:0.75rem;"></p>
+
+      <div class="controls-row">
+        <button class="btn btn-primary" id="btnExportData">📥 Exportar Reporte JSON</button>
+        <label class="btn btn-outline" style="cursor:pointer;">
+          📤 Importar JSON
+          <input type="file" id="importFileInput" accept=".json" class="hidden" />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
