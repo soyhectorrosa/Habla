@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ArquiVoz | Rehabilitación Logopédica Clínica</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            slateStudio: {
+              50: '#F8FAFC',
+              100: '#F1F5F9',
+              200: '#E2E8F0',
+              300: '#CBD5E1',
+              700: '#334155',
+              800: '#1E293B',
+              900: '#0F172A',
+            },
+            blueprint: {
+              50: '#EFF6FF',
+              100: '#DBEAFE',
+              600: '#1D4ED8',
+              700: '#1E40AF',
+              800: '#1E3A8A',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Estilos base de accesibilidad visual y contraste */
+    body {
+      background-color: #F4F5F7;
+      color: #0F172A;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Animación sutil para el pulso del micrófono activo */
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+      70% { transform: scale(1); box-shadow: 0 0 0 14px rgba(220, 38, 38, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+    .recording-pulse {
+      animation: pulseRing 1.6s infinite;
+    }
+
+    /* Resaltado rítmico silábico */
+    .syllable-active {
+      background-color: #DBEAFE;
+      color: #1E3A8A;
+      border-radius: 6px;
+      padding: 2px 4px;
+      transition: all 0.15s ease;
+    }
+
+    /* Ocultar barras de desplazamiento horizontales en pestañas */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-blueprint-100 selection:text-blueprint-800">
+
+  <!-- Barra Superior Clínica y Control de Fatiga (15 min) -->
+  <header class="bg-slateStudio-900 text-white sticky top-0 z-30 shadow-md border-b border-slateStudio-700">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <!-- Icono arquitectónico / vocal SVG -->
+        <div class="w-10 h-10 rounded-xl bg-blueprint-600 flex items-center justify-center shrink-0 shadow-inner">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight leading-tight">ArquiVoz</h1>
+          <p class="text-xs text-slate-300 font-medium">Terapia de Precisión y Fluidez</p>
+        </div>
+      </div>
+
+      <!-- Temporizador de Sesión Terapéutica (Prevención de fatiga neurogénica) -->
+      <div class="flex items-center gap-2 bg-slateStudio-800 px-3 py-1.5 rounded-xl border border-slateStudio-700">
+        <div class="text-right">
+          <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Sesión (Meta 15m)</span>
+          <span id="sessionTimerDisplay" class="text-sm font-bold tabular-nums text-emerald-400">00:00</span>
+        </div>
+        <button id="toggleTimerBtn" onclick="toggleSessionTimer()" title="Pausar/Reanudar tiempo" class="p-2 rounded-lg bg-slateStudio-700 hover:bg-slate-600 text-slate-200 transition">
+          <svg id="timerIconPause" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          <svg id="timerIconPlay" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navegación de Módulos Terapéuticos -->
+    <nav class="bg-slateStudio-800 border-t border-slateStudio-700">
+      <div class="max-w-3xl mx-auto px-2 py-2 flex gap-1.5 overflow-x-auto no-scrollbar" role="tablist">
+        <button onclick="switchTab('diccion')" id="tab-diccion" class="nav-tab flex-1 min-w-[115px] py-2.5 px-3 rounded-xl text-sm font-bold transition text-center bg-blueprint-600 text-white shadow">
+          1. Dicción
+        </button>
+        <button onclick="switchTab('evocacion')" id="tab-evocacion" class="nav-tab flex-1 min-w-[115px] py-2.5 px-3 rounded-xl text-sm font-semibold transition text-center text-slate-300 hover:bg-slateStudio-700">
+          2. Agilidad
+        </button>
+        <button onclick="switchTab('dialogo')" id="tab-dialogo" class="nav-tab flex-1 min-w-[115px] py-2.5 px-3 rounded-xl text-sm font-semibold transition text-center text-slate-300 hover:bg-slateStudio-700">
+          3. Diálogo
+        </button>
+        <button onclick="switchTab('vocabulario')" id="tab-vocabulario" class="nav-tab flex-1 min-w-[115px] py-2.5 px-3 rounded-xl text-sm font-semibold transition text-center text-slateStudio-300 hover:bg-slateStudio-700">
+          4. Mi Lista
+        </button>
+        <button onclick="switchTab('progreso')" id="tab-progreso" class="nav-tab flex-1 min-w-[105px] py-2.5 px-3 rounded-xl text-sm font-semibold transition text-center text-slate-300 hover:bg-slateStudio-700">
+          Progreso
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Aviso de Fatiga a los 15 minutos -->
+  <div id="fatigueBanner" class="hidden bg-amber-100 border-b-2 border-amber-400 text-amber-950 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+      <div class="text-sm font-medium">
+        <strong class="font-bold">Recomendación Clínica:</strong> Has completado 15 minutos de práctica activa. El descanso consolida el aprendizaje motor.
+      </div>
+      <button onclick="document.getElementById('fatigueBanner').classList.add('hidden')" class="px-3 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs font-bold shrink-0">
+        Entendido
+      </button>
+    </div>
+  </div>
+
+  <!-- Banner de Diagnóstico de Compatibilidad de Micrófono / Voz -->
+  <div id="browserWarning" class="hidden bg-rose-50 border-b border-rose-200 text-rose-900 px-4 py-3 text-sm">
+    <div class="max-w-3xl mx-auto flex items-start gap-2">
+      <span class="font-bold">Nota del sistema:</span>
+      <span id="browserWarningText">Tu navegador no soporta reconocimiento automático de voz. Recomendamos abrir esta página en Google Chrome para Android. Aún puedes usar los modelos de audio y la autoevaluación guiada.</span>
+    </div>
+  </div>
+
+  <!-- Contenedor Principal -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 space-y-6">
+
+    <!-- =================================================================== -->
+    <!-- MÓDULO 1: PRECISIÓN ARTICULATORIA Y RITMO (SOBREARTICULACIÓN)       -->
+    <!-- =================================================================== -->
+    <section id="view-diccion" class="module-view space-y-5">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-blueprint-50 text-blueprint-800 border border-blueprint-100">
+            Módulo 1 · Precisión y Ritmo
+          </span>
+          <div class="flex items-center gap-2">
+            <select id="diccionCategoryFilter" onchange="filterDiccionItems()" class="text-sm font-semibold bg-slate-100 border border-slate-300 text-slate-800 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blueprint-600">
+              <option value="all">Todas las categorías</option>
+              <option value="trabajo">Arquitectura y Obra</option>
+              <option value="cotidiano">Comunicación Diaria</option>
+              <option value="personal">Mis Frases Guardadas</option>
+            </select>
+            <span id="diccionCounter" class="text-sm font-bold text-slate-500">1 / 10</span>
+          </div>
+        </div>
+
+        <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+          <strong>Objetivo clínico:</strong> Exagera ligeramente el movimiento de labios y lengua. Mantén el volumen firme hasta la última sílaba sin acelerar.
+        </p>
+
+        <!-- Tarjeta de Frase Objetivo -->
+        <div class="bg-slateStudio-50 rounded-2xl p-6 border-2 border-slate-200 text-center space-y-4">
+          <div id="diccionCategoryBadge" class="text-xs font-bold uppercase tracking-widest text-slate-400">
+            ÁREA PROFESIONAL
+          </div>
+          
+          <!-- Texto Principal Grande para Lectura Cómoda con Lentes -->
+          <div id="diccionTargetText" class="text-2xl sm:text-3xl font-extrabold text-slateStudio-900 leading-snug tracking-tight">
+            Necesito revisar los planos.
+          </div>
+
+          <!-- Guía Silábica / Pacing Visual -->
+          <div id="diccionSyllablesBox" class="pt-1">
+            <div id="diccionSyllablesText" class="text-lg sm:text-xl font-medium text-blueprint-700 tracking-wide">
+              Ne - ce - si - to &nbsp; re - vi - sar &nbsp; los &nbsp; pla - nos
+            </div>
+          </div>
+
+          <!-- Controles de Audio Modelo y Velocidad -->
+          <div class="pt-3 flex flex-wrap items-center justify-center gap-3">
+            <button onclick="playDiccionModel(1.0)" class="flex-1 min-w-[155px] max-w-[220px] py-3.5 px-4 rounded-xl bg-white hover:bg-slate-100 active:bg-slate-200 text-slateStudio-900 font-bold text-base border-2 border-slate-300 shadow-sm flex items-center justify-center gap-2 transition">
+              <svg class="w-5 h-5 text-blueprint-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd"/></svg>
+              Escuchar (Normal)
+            </button>
+            <button onclick="playDiccionModel(0.72)" class="flex-1 min-w-[155px] max-w-[220px] py-3.5 px-4 rounded-xl bg-white hover:bg-slate-100 active:bg-slate-200 text-slateStudio-900 font-bold text-base border-2 border-slate-300 shadow-sm flex items-center justify-center gap-2 transition">
+              <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Ritmo Lento
+            </button>
+          </div>
+        </div>
+
+        <!-- Medidor de Proyección Vocal (Volumen en Tiempo Real) -->
+        <div class="mt-5 bg-slate-100 rounded-xl p-4 border border-slate-200">
+          <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+            <span>Proyección Vocal (Volumen)</span>
+            <span id="diccionVolumeLabel" class="text-slate-500">En espera</span>
+          </div>
+          <div class="w-full h-4 bg-slate-200 rounded-full overflow-hidden p-0.5 flex items-center">
+            <div id="diccionVolumeBar" class="h-full rounded-full bg-emerald-500 transition-all duration-75" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] font-medium text-slate-400 mt-1">
+            <span>Muy bajo</span>
+            <span>Rango óptimo de conversación</span>
+            <span>Fuerte</span>
+          </div>
+        </div>
+
+        <!-- Botón Principal de Grabación y Análisis -->
+        <div class="mt-5 flex flex-col items-center">
+          <button id="diccionRecordBtn" onclick="toggleRecording('diccion')" class="w-full py-4 px-6 rounded-2xl bg-blueprint-700 hover:bg-blueprint-800 text-white font-extrabold text-lg shadow-md flex items-center justify-center gap-3 transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>
+            <span id="diccionRecordBtnText">Tocar para Hablar y Analizar</span>
+          </button>
+          <p id="diccionRecordingHint" class="text-xs text-slate-500 mt-2 font-medium text-center">
+            Toma aire antes de empezar y habla con claridad hacia el teléfono.
+          </p>
+        </div>
+
+        <!-- Panel de Resultados del Análisis Logopédico -->
+        <div id="diccionResultPanel" class="hidden mt-6 rounded-2xl border-2 p-5 space-y-4 transition-all">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Índice de Inteligibilidad</span>
+              <span id="diccionScoreBadge" class="text-3xl font-extrabold text-emerald-700">100%</span>
+            </div>
+            <div id="diccionStatusPill" class="px-3.5 py-1.5 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-900">
+              Articulación Clara
+            </div>
+          </div>
+
+          <!-- Análisis Palabra por Palabra -->
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">Análisis palabra por palabra:</span>
+            <div id="diccionWordBreakdown" class="flex flex-wrap gap-2 text-lg font-bold"></div>
+          </div>
+
+          <!-- Lo que captó el micrófono -->
+          <div class="bg-white/80 rounded-xl p-3 border border-slate-200">
+            <span class="text-xs font-semibold text-slate-500 block">Lo que el sistema escuchó:</span>
+            <p id="diccionTranscriptText" class="text-base font-medium text-slate-800 italic mt-0.5">"..."</p>
+          </div>
+
+          <!-- Observación Clínica del Logopeda -->
+          <div class="flex items-start gap-2.5 text-sm text-slate-700 bg-white rounded-xl p-3.5 border border-slate-200">
+            <svg class="w-5 h-5 text-blueprint-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p id="diccionClinicalFeedback" class="leading-relaxed font-medium"></p>
+          </div>
+        </div>
+
+        <!-- Navegación Anterior / Siguiente -->
+        <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
+          <button onclick="prevDiccion()" class="py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-base transition">
+            ← Anterior
+          </button>
+          <button onclick="nextDiccion()" class="py-3 px-6 rounded-xl bg-slateStudio-900 hover:bg-slateStudio-800 text-white font-bold text-base transition">
+            Siguiente Frase →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MÓDULO 2: EVOCACIÓN LÉXICA Y AGILIDAD VERBAL (CIERRE SEMÁNTICO)     -->
+    <!-- =================================================================== -->
+    <section id="view-evocacion" class="module-view hidden space-y-5">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200">
+            Módulo 2 · Agilidad y Evocación
+          </span>
+          <span id="evocacionCounter" class="text-sm font-bold text-slate-500">1 / 10</span>
+        </div>
+
+        <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+          <strong>Objetivo clínico:</strong> Desbloquear el acceso rápido al vocabulario. Lee la frase en silencio y di en voz alta la palabra que falta. Si te bloqueas, usa las pistas progresivas.
+        </p>
+
+        <!-- Tarjeta de Cierre Semántico -->
+        <div class="bg-slateStudio-50 rounded-2xl p-6 border-2 border-slate-200 space-y-4">
+          <div class="flex items-center justify-between">
+            <span id="evocacionContextTag" class="text-xs font-bold uppercase tracking-widest text-slate-400">CONTEXTO TÉCNICO</span>
+            <button onclick="speakText(evocacionItems[currentEvocacionIdx].prompt.replace('_____', ''))" class="text-xs font-bold text-blueprint-700 hover:underline flex items-center gap-1">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217z" clip-rule="evenodd"/></svg>
+              Escuchar enunciado
+            </button>
+          </div>
+
+          <p id="evocacionPromptText" class="text-2xl sm:text-3xl font-bold text-slateStudio-900 leading-snug">
+            Para medir la escala en un dibujo técnico utilizo el <span class="inline-block border-b-4 border-blueprint-600 text-blueprint-700 px-2">_____</span>.
+          </p>
+
+          <!-- Sistema de Ayudas Clínicas Progresivas -->
+          <div class="pt-2 space-y-2.5">
+            <div class="flex flex-wrap gap-2">
+              <button onclick="showEvocacionCue(1)" id="btnCue1" class="py-2.5 px-4 rounded-xl bg-white hover:bg-amber-50 border border-slate-300 text-slate-800 text-sm font-bold transition">
+                💡 Pista 1: Contexto
+              </button>
+              <button onclick="showEvocacionCue(2)" id="btnCue2" class="py-2.5 px-4 rounded-xl bg-white hover:bg-amber-50 border border-slate-300 text-slate-800 text-sm font-bold transition">
+                🔤 Pista 2: Primera sílaba
+              </button>
+              <button onclick="revealEvocacionAnswer()" class="py-2.5 px-4 rounded-xl bg-slate-200/70 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">
+                Ver respuesta
+              </button>
+            </div>
+
+            <!-- Contenedor de Pistas Mostradas -->
+            <div id="evocacionCuesDisplay" class="hidden bg-amber-50/90 border border-amber-200 rounded-xl p-3.5 text-sm text-amber-950 space-y-1.5">
+              <p id="evocacionCue1Text" class="hidden"></p>
+              <p id="evocacionCue2Text" class="hidden font-mono text-base font-bold tracking-wider text-blueprint-800"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de Respuesta Oral -->
+        <div class="mt-5">
+          <button id="evocacionRecordBtn" onclick="toggleRecording('evocacion')" class="w-full py-4 px-6 rounded-2xl bg-blueprint-700 hover:bg-blueprint-800 text-white font-extrabold text-lg shadow-md flex items-center justify-center gap-3 transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>
+            <span id="evocacionRecordBtnText">Decir la Palabra en Voz Alta</span>
+          </button>
+        </div>
+
+        <!-- Resultado de Evocación -->
+        <div id="evocacionResultPanel" class="hidden mt-5 rounded-2xl border-2 p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span id="evocacionResultTitle" class="text-lg font-extrabold">¡Palabra evocada con éxito!</span>
+            <span id="evocacionTimeTag" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-600">Tiempo: 2.1s</span>
+          </div>
+          <p id="evocacionResultDetail" class="text-base text-slate-800 font-medium"></p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
+          <button onclick="prevEvocacion()" class="py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-base transition">
+            ← Anterior
+          </button>
+          <button onclick="nextEvocacion()" class="py-3 px-6 rounded-xl bg-slateStudio-900 hover:bg-slateStudio-800 text-white font-bold text-base transition">
+            Siguiente Reto →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MÓDULO 3: SIMULACIÓN DE DIÁLOGO PROFESIONAL Y COTIDIANO             -->
+    <!-- =================================================================== -->
+    <section id="view-dialogo" class="module-view hidden space-y-5">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-900 border border-emerald-200">
+            Módulo 3 · Conversación Funcional
+          </span>
+          <span id="dialogoCounter" class="text-sm font-bold text-slate-500">1 / 6</span>
+        </div>
+
+        <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+          <strong>Objetivo clínico:</strong> Entrenar respuestas espontáneas de 3 a 6 palabras en situaciones reales de reunión, obra o casa.
+        </p>
+
+        <!-- Interlocutor Virtual -->
+        <div class="bg-slateStudio-900 text-white rounded-2xl p-6 space-y-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span id="dialogoRoleTag" class="text-xs font-bold uppercase tracking-widest text-blueprint-100 bg-blueprint-800/80 px-3 py-1 rounded-lg">
+              CLIENTE / REUNIÓN DE OBRA
+            </span>
+            <button onclick="playDialogoQuestion()" class="py-2 px-3.5 rounded-xl bg-slateStudio-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center gap-1.5 transition">
+              <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217z" clip-rule="evenodd"/></svg>
+              Repetir Pregunta
+            </button>
+          </div>
+
+          <p id="dialogoQuestionText" class="text-xl sm:text-2xl font-bold leading-snug text-white">
+            "Arquitecto, ¿para cuándo tendremos listos los planos corregidos?"
+          </p>
+        </div>
+
+        <!-- Estructura Guía de Respuesta -->
+        <div class="mt-4 bg-blueprint-50/70 border border-blueprint-100 rounded-2xl p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-blueprint-800">Estructura Sugerida para Responder:</span>
+            <button onclick="toggleDialogoModel()" class="text-xs font-bold text-blueprint-700 underline">
+              Ver/Ocultar ejemplo
+            </button>
+          </div>
+          <p id="dialogoStructureHint" class="text-base font-bold text-slateStudio-800">
+            [Confirmación] + [Día o plazo] — Ej: "Estarán listos el viernes."
+          </p>
+          <div id="dialogoExampleBox" class="hidden pt-2 border-t border-blueprint-100 flex items-center justify-between gap-2">
+            <span id="dialogoExampleText" class="text-sm font-semibold text-blueprint-900 italic">"Estarán listos este viernes por la mañana."</span>
+            <button onclick="speakText(dialogoItems[currentDialogoIdx].example)" class="px-3 py-1.5 bg-white border border-blueprint-200 rounded-lg text-xs font-bold text-blueprint-700 shrink-0">
+              🔊 Oír ejemplo
+            </button>
+          </div>
+        </div>
+
+        <!-- Grabación de Respuesta Libre -->
+        <div class="mt-5">
+          <button id="dialogoRecordBtn" onclick="toggleRecording('dialogo')" class="w-full py-4 px-6 rounded-2xl bg-blueprint-700 hover:bg-blueprint-800 text-white font-extrabold text-lg shadow-md flex items-center justify-center gap-3 transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>
+            <span id="dialogoRecordBtnText">Responder en Voz Alta</span>
+          </button>
+        </div>
+
+        <!-- Análisis de la Respuesta Conversacional -->
+        <div id="dialogoResultPanel" class="hidden mt-5 rounded-2xl border-2 border-emerald-300 bg-emerald-50/60 p-5 space-y-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 block">Transcripción de tu respuesta:</span>
+          <p id="dialogoTranscriptOutput" class="text-xl font-bold text-slateStudio-900 bg-white p-3.5 rounded-xl border border-emerald-200">
+            "..."
+          </p>
+          <p id="dialogoFeedbackText" class="text-sm font-medium text-slate-700 leading-relaxed"></p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
+          <button onclick="prevDialogo()" class="py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-base transition">
+            ← Anterior
+          </button>
+          <button onclick="nextDialogo()" class="py-3 px-6 rounded-xl bg-slateStudio-900 hover:bg-slateStudio-800 text-white font-bold text-base transition">
+            Siguiente Situación →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MÓDULO 4: GESTOR DE VOCABULARIO Y FRASES PROPIAS                    -->
+    <!-- =================================================================== -->
+    <section id="view-vocabulario" class="module-view hidden space-y-5">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-5">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-800 border border-slate-200 mb-2">
+            Módulo 4 · Personalización Clínica
+          </span>
+          <h2 class="text-xl font-extrabold text-slateStudio-900">Mi Banco de Frases y Términos</h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Agrega nombres de familiares, clientes, términos de arquitectura o frases que necesites usar con seguridad en tu día a día. Se integran automáticamente en el Módulo 1.
+          </p>
+        </div>
+
+        <!-- Formulario para Agregar Frase -->
+        <form onsubmit="addCustomPhrase(event)" class="bg-slateStudio-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+          <div>
+            <label for="customPhraseInput" class="block text-sm font-bold text-slate-800 mb-1">
+              Nueva frase o palabra clave (recomendado: 2 a 6 palabras)
+            </label>
+            <input type="text" id="customPhraseInput" required maxlength="80" placeholder="Ej. Revisemos la cimentación norte" class="w-full px-4 py-3.5 rounded-xl bg-white border-2 border-slate-300 text-base font-semibold text-slateStudio-900 focus:outline-none focus:border-blueprint-600">
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <select id="customCategoryInput" class="px-4 py-3 rounded-xl bg-white border-2 border-slate-300 text-sm font-bold text-slate-800">
+              <option value="trabajo">Área: Arquitectura / Trabajo</option>
+              <option value="cotidiano">Área: Hogar / Familia</option>
+            </select>
+            <button type="submit" class="flex-1 min-w-[180px] py-3 px-5 rounded-xl bg-blueprint-700 hover:bg-blueprint-800 text-white font-bold text-base shadow-sm transition">
+              + Guardar en mi Práctica
+            </button>
+          </div>
+        </form>
+
+        <!-- Lista de Frases Personalizadas -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Frases Agregadas por Ti (<span id="customCount">0</span>)</h3>
+          </div>
+          <div id="customPhrasesList" class="space-y-2.5">
+            <!-- Renderizado dinámico -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MÓDULO 5: PANEL DE PROGRESO CLÍNICO                                 -->
+    <!-- =================================================================== -->
+    <section id="view-progreso" class="module-view hidden space-y-5">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 mb-2">
+              Evolución Terapéutica
+            </span>
+            <h2 class="text-xl font-extrabold text-slateStudio-900">Registro de Rehabilitación</h2>
+          </div>
+          <button onclick="resetStats()" class="text-xs font-bold text-rose-600 hover:underline px-2 py-1">
+            Reiniciar historial
+          </button>
+        </div>
+
+        <!-- Tarjetas de Métricas Clave -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-slateStudio-50 p-4 rounded-2xl border border-slate-200">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Claridad Promedio</span>
+            <span id="statAvgScore" class="text-3xl font-extrabold text-blueprint-700 mt-1 block">--%</span>
+            <span class="text-xs text-slate-500 mt-1 block">Meta funcional: &gt; 85%</span>
+          </div>
+          <div class="bg-slateStudio-50 p-4 rounded-2xl border border-slate-200">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Intentos Analizados</span>
+            <span id="statTotalAttempts" class="text-3xl font-extrabold text-slateStudio-900 mt-1 block">0</span>
+            <span class="text-xs text-slate-500 mt-1 block">Repeticiones con voz</span>
+          </div>
+          <div class="bg-slateStudio-50 p-4 rounded-2xl border border-slate-200">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Frases Dominadas</span>
+            <span id="statMasteredCount" class="text-3xl font-extrabold text-emerald-600 mt-1 block">0</span>
+            <span class="text-xs text-slate-500 mt-1 block">Precisión ≥ 90%</span>
+          </div>
+        </div>
+
+        <!-- Historial Reciente -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Últimas Prácticas Registradas</h3>
+          <div id="recentHistoryList" class="space-y-2 text-sm">
+            <p class="text-slate-500 italic py-4 text-center bg-slate-50 rounded-xl border border-slate-200">
+              Aún no hay grabaciones registradas hoy. Completa un ejercicio en Dicción o Agilidad para ver tu evolución.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal / Mensaje Flotante Personalizado (Reemplazo seguro de alert) -->
+  <div id="toastNotification" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden max-w-md w-[92%] bg-slateStudio-900 text-white px-5 py-3.5 rounded-2xl shadow-xl border border-slateStudio-700 flex items-center justify-between gap-3">
+    <span id="toastMessage" class="text-sm font-semibold">Mensaje</span>
+    <button onclick="hideToast()" class="text-xs font-bold text-blueprint-100 uppercase tracking-wider">Cerrar</button>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. BASE DE DATOS CLÍNICA INICIAL (ADAPTADA A ARQUITECTO / ADULTO ACTIVO)
+       ========================================================================== */
+    const DEFAULT_DICCION_ITEMS = [
+      { id: 'd1', category: 'trabajo', text: 'Necesito revisar los planos.', syllables: 'Ne-ce-si-to  re-vi-sar  los  pla-nos' },
+      { id: 'd2', category: 'trabajo', text: 'La reunión es a las diez.', syllables: 'La  reu-nión  es  a  las  diez' },
+      { id: 'd3', category: 'trabajo', text: 'Vamos a verificar la obra.', syllables: 'Va-mos  a  ve-ri-fi-car  la  o-bra' },
+      { id: 'd4', category: 'trabajo', text: 'Tengo una propuesta nueva.', syllables: 'Ten-go  u-na  pro-pues-ta  nue-va' },
+      { id: 'd5', category: 'trabajo', text: '¿Cuál es el presupuesto final?', syllables: '¿Cuál  es  el  pre-su-pues-to  fi-nal?' },
+      { id: 'd6', category: 'trabajo', text: 'Falta aprobar la estructura.', syllables: 'Fal-ta  a-pro-bar  la  es-truc-tu-ra' },
+      { id: 'd7', category: 'cotidiano', text: 'Por favor, hable más despacio.', syllables: 'Por  fa-vor,  ha-ble  más  des-pa-cio' },
+      { id: 'd8', category: 'cotidiano', text: 'Déjeme pensar un momento.', syllables: 'Dé-je-me  pen-sar  un  mo-men-to' },
+      { id: 'd9', category: 'cotidiano', text: 'Quiero un café sin azúcar.', syllables: 'Quie-ro  un  ca-fé  sin  a-zú-car' },
+      { id: 'd10', category: 'cotidiano', text: 'Buenos días, ¿cómo está usted?', syllables: 'Bue-nos  dí-as,  ¿có-mo  es-tá  us-ted?' }
+    ];
+
+    const EVOCACION_ITEMS = [
+      {
+        context: 'HERRAMIENTA DE DISEÑO',
+        prompt: 'Para medir la escala en un plano impreso utilizo el _____.',
+        targets: ['escalimetro', 'escalímetro', 'metro', 'regla'],
+        displayAnswer: 'Escalímetro',
+        cue1: 'Es una regla especial de tres caras con diferentes escalas métricas.',
+        cue2: 'Empieza por: ES - CA - ... (11 letras)'
+      },
+      {
+        context: 'GESTIÓN DE OBRA',
+        prompt: 'El documento donde calculamos el costo total de materiales y mano de obra es el _____.',
+        targets: ['presupuesto', 'cotizacion', 'cotización'],
+        displayAnswer: 'Presupuesto',
+        cue1: 'Se entrega al cliente antes de iniciar la construcción para aprobar gastos.',
+        cue2: 'Empieza por: PRE - SU - ... (11 letras)'
+      },
+      {
+        context: 'DOCUMENTACIÓN TÉCNICA',
+        prompt: 'Antes de iniciar cualquier construcción necesitamos aprobar los _____.',
+        targets: ['planos', 'plano', 'permisos', 'proyectos', 'proyecto'],
+        displayAnswer: 'Planos',
+        cue1: 'Son los dibujos arquitectónicos de plantas, cortes y fachadas.',
+        cue2: 'Empieza por: PLA - ... (6 letras)'
+      },
+      {
+        context: 'ESTRUCTURA Y MATERIALES',
+        prompt: 'Para preparar concreto reforzado mezclamos cemento, arena, grava y _____.',
+        targets: ['agua', 'acero', 'varilla'],
+        displayAnswer: 'Agua',
+        cue1: 'Es el líquido indispensable para hidratar la mezcla.',
+        cue2: 'Empieza por: A - ... (4 letras)'
+      },
+      {
+        context: 'VIDA COTIDIANA',
+        prompt: 'Para abrir la cerradura de la oficina necesito la _____.',
+        targets: ['llave', 'llaves'],
+        displayAnswer: 'Llave',
+        cue1: 'Objeto metálico pequeño que llevas en el llavero.',
+        cue2: 'Empieza por: LLA - ... (5 letras)'
+      },
+      {
+        context: 'ESPACIOS ARQUITECTÓNICOS',
+        prompt: 'El elemento arquitectónico que conecta dos niveles o pisos distintos es la _____.',
+        targets: ['escalera', 'escaleras', 'rampa', 'ascensor'],
+        displayAnswer: 'Escalera',
+        cue1: 'Está compuesta por una serie de peldaños o escalones.',
+        cue2: 'Empieza por: ES - CA - ... (8 letras)'
+      },
+      {
+        context: 'COMUNICACIÓN PROFESIONAL',
+        prompt: 'Cuando tenemos una cita formal con un cliente decimos que tenemos una _____.',
+        targets: ['reunion', 'reunión', 'junta', 'entrevista'],
+        displayAnswer: 'Reunión',
+        cue1: 'Encuentro acordado a una hora específica para tratar asuntos de trabajo.',
+        cue2: 'Empieza por: REU - ... (7 letras)'
+      },
+      {
+        context: 'VIDA COTIDIANA',
+        prompt: 'Para firmar un contrato o hacer un boceto rápido a mano uso un _____.',
+        targets: ['lapiz', 'lápiz', 'boligrafo', 'bolígrafo', 'pluma'],
+        displayAnswer: 'Lápiz / Bolígrafo',
+        cue1: 'Instrumento de escritura o dibujo manual.',
+        cue2: 'Empieza por: LÁ - ... o BO - ...'
+      }
+    ];
+
+    const DIALOGO_ITEMS = [
+      {
+        role: 'CLIENTE EN REUNIÓN',
+        question: 'Arquitecto, ¿para cuándo tendremos listos los planos corregidos?',
+        structure: '[Confirmación] + [Día o plazo] — Ej: "Estarán listos el viernes."',
+        example: 'Estarán listos este viernes por la mañana.'
+      },
+      {
+        role: 'INGENIERO DE OBRA',
+        question: '¿Qué material recomienda para el acabado de la fachada principal?',
+        structure: '[Recomiendo / Prefiero] + [Material] — Ej: "Recomiendo piedra natural."',
+        example: 'Recomiendo concreto aparente y madera.'
+      },
+      {
+        role: 'COMUNICACIÓN ASERTIVA',
+        question: '¿Me podría repetir ese dato, por favor? No alcancé a anotarlo.',
+        structure: '[Por supuesto] + [Dato claro] — Ej: "Con gusto, la medida es tres metros."',
+        example: 'Con gusto, la reunión es mañana a las diez.'
+      },
+      {
+        role: 'CONTROL DE RITMO EN CONVERSACIÓN',
+        question: 'Si alguien en una reunión habla muy rápido y quieres pedirle calma, ¿qué le dices?',
+        structure: '[Petición amable] + [Acción] — Ej: "Por favor, hable más despacio."',
+        example: 'Disculpe, ¿puede hablar un poco más despacio?'
+      },
+      {
+        role: 'ENTORNO FAMILIAR',
+        question: 'Buenos días, ¿qué te gustaría tomar ahora mismo?',
+        structure: '[Deseo] + [Bebida] — Ej: "Me gustaría un café caliente."',
+        example: 'Quisiera un vaso con agua fresca, por favor.'
+      }
+    ];
+
+    /* ==========================================================================
+       2. ESTADO GLOBAL Y ALMACENAMIENTO LOCAL (LOCALSTORAGE)
+       ========================================================================== */
+    let customPhrases = JSON.parse(localStorage.getItem('arquivoz_custom_phrases') || '[]');
+    let statsData = JSON.parse(localStorage.getItem('arquivoz_stats') || '{"scores":[],"mastered":[],"history":[]}');
+
+    let filteredDiccion = [];
+    let currentDiccionIdx = 0;
+    let currentEvocacionIdx = 0;
+    let currentDialogoIdx = 0;
+
+    // Variables de tiempo y grabación
+    let sessionSeconds = 0;
+    let timerRunning = true;
+    let timerInterval = null;
+    let activeRecordingModule = null;
+    let recognition = null;
+    let audioContext = null;
+    let analyser = null;
+    let micStream = null;
+    let volumeAnimFrame = null;
+    let evocacionStartTime = 0;
+
+    /* ==========================================================================
+       3. INICIALIZACIÓN Y VERIFICACIÓN DE API DE VOZ
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      initSpeechRecognition();
+      filterDiccionItems();
+      renderEvocacion();
+      renderDialogo();
+      renderCustomPhrasesList();
+      updateStatsUI();
+      startSessionTimer();
+    });
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        document.getElementById('browserWarning').classList.remove('hidden');
+        return;
+      }
+      recognition = new SpeechRecognition();
+      recognition.lang = 'es-ES';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 3;
+
+      recognition.onresult = (event) => {
+        const alternatives = [];
+        for (let i = 0; i < event.results[0].length; i++) {
+          alternatives.push(event.results[0][i].transcript);
+        }
+        const primaryTranscript = alternatives[0];
+        handleSpeechResult(activeRecordingModule, primaryTranscript, alternatives);
+      };
+
+      recognition.onerror = (event) => {
+        stopAudioVisualizer();
+        const mod = activeRecordingModule;
+        resetRecordButtonUI(mod);
+        activeRecordingModule = null;
+
+        if (event.error === 'no-speech') {
+          showToast('No se detectó voz. Acércate un poco más al micrófono e intenta de nuevo.');
+        } else if (event.error === 'not-allowed') {
+          showToast('Permiso de micrófono bloqueado. Habilítalo en el ícono de candado de Chrome.');
+        } else {
+          showToast('Error de audio (' + event.error + '). Intenta hablar nuevamente.');
+        }
+      };
+
+      recognition.onend = () => {
+        stopAudioVisualizer();
+        if (activeRecordingModule) {
+          resetRecordButtonUI(activeRecordingModule);
+          activeRecordingModule = null;
+        }
+      };
+    }
+
+    /* ==========================================================================
+       4. CONTROL DE SESIÓN Y PESTAÑAS
+       ========================================================================== */
+    function startSessionTimer() {
+      timerInterval = setInterval(() => {
+        if (!timerRunning) return;
+        sessionSeconds++;
+        const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
+        const secs = String(sessionSeconds % 60).padStart(2, '0');
+        const display = document.getElementById('sessionTimerDisplay');
+        display.textContent = `${mins}:${secs}`;
+
+        if (sessionSeconds === 900) { // 15 minutos
+          display.classList.remove('text-emerald-400');
+          display.classList.add('text-amber-400');
+          document.getElementById('fatigueBanner').classList.remove('hidden');
+        }
+      }, 1000);
+    }
+
+    function toggleSessionTimer() {
+      timerRunning = !timerRunning;
+      document.getElementById('timerIconPause').classList.toggle('hidden', !timerRunning);
+      document.getElementById('timerIconPlay').classList.toggle('hidden', timerRunning);
+    }
+
+    function switchTab(tabName) {
+      if (activeRecordingModule) {
+        stopRecording();
+      }
+      document.querySelectorAll('.module-view').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('bg-blueprint-600', 'text-white', 'shadow', 'font-bold');
+        btn.classList.add('text-slate-300', 'font-semibold');
+      });
+      const activeBtn = document.getElementById(`tab-${tabName}`);
+      activeBtn.classList.add('bg-blueprint-600', 'text-white', 'shadow', 'font-bold');
+      activeBtn.classList.remove('text-slate-300', 'font-semibold');
+
+      if (tabName === 'evocacion') {
+        evocacionStartTime = Date.now();
+      }
+    }
+
+    /* ==========================================================================
+       5. SÍNTESIS DE VOZ (MODELO AUDITIVO CON CONTROL DE VELOCIDAD)
+       ========================================================================== */
+    function speakText(text, rate = 1.0, onEndCallback = null) {
+      if (!('speechSynthesis' in window)) {
+        showToast('Tu navegador no soporta reproducción de voz.');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'es-ES';
+      utterance.rate = rate;
+      utterance.pitch = 1.0;
+
+      // Buscar mejor voz en español disponible
+      const voices = window.speechSynthesis.getVoices();
+      const esVoice = voices.find(v => v.lang.includes('es-MX') || v.lang.includes('es-ES') || v.lang.includes('es'));
+      if (esVoice) utterance.voice = esVoice;
+
+      if (onEndCallback) {
+        utterance.onend = onEndCallback;
+      }
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function playDiccionModel(rate) {
+      const item = filteredDiccion[currentDiccionIdx];
+      if (!item) return;
+
+      const syllBox = document.getElementById('diccionSyllablesText');
+      const words = item.syllables.split(/\s{2,}/);
+      
+      // Animación visual rítmica por palabra/bloque
+      let step = 0;
+      syllBox.innerHTML = words.map((w, idx) => `<span id="syll-chunk-${idx}" class="inline-block mx-1 transition">${w}</span>`).join('');
+      
+      const intervalMs = rate < 1 ? 650 : 420;
+      const highlightTimer = setInterval(() => {
+        words.forEach((_, idx) => {
+          const el = document.getElementById(`syll-chunk-${idx}`);
+          if (el) el.classList.toggle('syllable-active', idx === step);
+        });
+        step++;
+        if (step > words.length) {
+          clearInterval(highlightTimer);
+          syllBox.textContent = item.syllables;
+        }
+      }, intervalMs);
+
+      speakText(item.text, rate, () => {
+        clearInterval(highlightTimer);
+        syllBox.textContent = item.syllables;
+      });
+    }
+
+    /* ==========================================================================
+       6. MEDIDOR DE PROYECCIÓN VOCAL (WEB AUDIO API) Y GRABACIÓN
+       ========================================================================== */
+    async function startAudioVisualizer(moduleName) {
+      if (moduleName !== 'diccion') return;
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(micStream);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        const bar = document.getElementById('diccionVolumeBar');
+        const label = document.getElementById('diccionVolumeLabel');
+
+        function updateMeter() {
+          if (!analyser) return;
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          const avg = sum / dataArray.length;
+          const pct = Math.min(100, Math.round((avg / 75) * 100));
+
+          bar.style.width = `${pct}%`;
+          if (pct < 18) {
+            bar.className = 'h-full rounded-full bg-amber-400 transition-all duration-75';
+            label.textContent = 'Bajo — Proyecta un poco más';
+            label.className = 'text-amber-700 font-bold';
+          } else if (pct <= 82) {
+            bar.className = 'h-full rounded-full bg-emerald-500 transition-all duration-75';
+            label.textContent = 'Óptimo — Buena proyección';
+            label.className = 'text-emerald-700 font-bold';
+          } else {
+            bar.className = 'h-full rounded-full bg-blueprint-600 transition-all duration-75';
+            label.textContent = 'Fuerte y claro';
+            label.className = 'text-blueprint-700 font-bold';
+          }
+          volumeAnimFrame = requestAnimationFrame(updateMeter);
+        }
+        updateMeter();
+      } catch (err) {
+        // Silencioso si el navegador bloquea WebAudio paralelo al SpeechRecognition
+      }
+    }
+
+    function stopAudioVisualizer() {
+      if (volumeAnimFrame) cancelAnimationFrame(volumeAnimFrame);
+      if (micStream) {
+        micStream.getTracks().forEach(t => t.stop());
+        micStream = null;
+      }
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close().catch(() => {});
+        audioContext = null;
+      }
+      analyser = null;
+      const bar = document.getElementById('diccionVolumeBar');
+      const label = document.getElementById('diccionVolumeLabel');
+      if (bar) bar.style.width = '0%';
+      if (label) {
+        label.textContent = 'En espera';
+        label.className = 'text-slate-500';
+      }
+    }
+
+    function toggleRecording(moduleName) {
+      if (!recognition) {
+        showToast('Usa Google Chrome en Android para habilitar el análisis automático de voz.');
+        return;
+      }
+
+      if (activeRecordingModule === moduleName) {
+        stopRecording();
+        return;
+      }
+
+      if (activeRecordingModule) {
+        stopRecording();
+      }
+
+      window.speechSynthesis.cancel();
+      activeRecordingModule = moduleName;
+      setRecordButtonActiveUI(moduleName);
+
+      if (moduleName === 'evocacion' && !evocacionStartTime) {
+        evocacionStartTime = Date.now();
+      }
+
+      startAudioVisualizer(moduleName);
+      try {
+        recognition.start();
+      } catch (e) {
+        recognition.stop();
+        setTimeout(() => recognition.start(), 200);
+      }
+    }
+
+    function stopRecording() {
+      if (recognition) {
+        try { recognition.stop(); } catch (e) {}
+      }
+      stopAudioVisualizer();
+      if (activeRecordingModule) {
+        resetRecordButtonUI(activeRecordingModule);
+        activeRecordingModule = null;
+      }
+    }
+
+    function setRecordButtonActiveUI(mod) {
+      const btn = document.getElementById(`${mod}RecordBtn`);
+      const txt = document.getElementById(`${mod}RecordBtnText`);
+      btn.classList.remove('bg-blueprint-700', 'hover:bg-blueprint-800');
+      btn.classList.add('bg-rose-600', 'hover:bg-rose-700', 'recording-pulse');
+      txt.textContent = 'Escuchando... (Toca para detener)';
+    }
+
+    function resetRecordButtonUI(mod) {
+      const btn = document.getElementById(`${mod}RecordBtn`);
+      const txt = document.getElementById(`${mod}RecordBtnText`);
+      if (!btn || !txt) return;
+      btn.classList.add('bg-blueprint-700', 'hover:bg-blueprint-800');
+      btn.classList.remove('bg-rose-600', 'hover:bg-rose-700', 'recording-pulse');
+      if (mod === 'diccion') txt.textContent = 'Tocar para Hablar y Analizar';
+      if (mod === 'evocacion') txt.textContent = 'Decir la Palabra en Voz Alta';
+      if (mod === 'dialogo') txt.textContent = 'Responder en Voz Alta';
+    }
+
+    /* ==========================================================================
+       7. ALGORITMO DE ANÁLISIS FONÉTICO / LOGOPÉDICO
+       ========================================================================== */
+    function normalizeSpanish(str) {
+      return str
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[¿?¡!.,;:()"]/g, '')
+        .trim();
+    }
+
+    // Distancia de Levenshtein para tolerar pequeñas variaciones de transcripción
+    function levenshteinDistance(a, b) {
+      const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return matrix[a.length][b.length];
+    }
+
+    function wordsMatchClinically(targetWord, spokenWord) {
+      if (targetWord === spokenWord) return true;
+      if (targetWord.length >= 5 && levenshteinDistance(targetWord, spokenWord) <= 1) return true;
+      return false;
+    }
+
+    function handleSpeechResult(moduleName, transcript, alternatives) {
+      if (moduleName === 'diccion') {
+        evaluateDiccion(transcript);
+      } else if (moduleName === 'evocacion') {
+        evaluateEvocacion(transcript, alternatives);
+      } else if (moduleName === 'dialogo') {
+        evaluateDialogo(transcript);
+      }
+    }
+
+    /* --- Evaluación Módulo 1: Dicción --- */
+    function evaluateDiccion(transcript) {
+      const item = filteredDiccion[currentDiccionIdx];
+      const rawTargetWords = item.text.split(/\s+/);
+      const normTargetWords = rawTargetWords.map(normalizeSpanish).filter(Boolean);
+      const normSpokenWords = normalizeSpanish(transcript).split(/\s+/).filter(Boolean);
+
+      let matchedCount = 0;
+      const missedWords = [];
+      const breakdownHTML = [];
+
+      rawTargetWords.forEach((rawWord) => {
+        const cleanTarget = normalizeSpanish(rawWord);
+        if (!cleanTarget) return;
+
+        const isMatched = normSpokenWords.some(sw => wordsMatchClinically(cleanTarget, sw));
+        if (isMatched) {
+          matchedCount++;
+          breakdownHTML.push(`<span class="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300">✓ ${rawWord}</span>`);
+        } else {
+          missedWords.push(rawWord.replace(/[¿?¡!.,]/g, ''));
+          breakdownHTML.push(`<span class="px-3 py-1 rounded-xl bg-amber-100 text-amber-950 border border-amber-300">! ${rawWord}</span>`);
+        }
+      });
+
+      const score = Math.round((matchedCount / normTargetWords.length) * 100);
+
+      // Renderizar resultados
+      const panel = document.getElementById('diccionResultPanel');
+      const scoreEl = document.getElementById('diccionScoreBadge');
+      const pillEl = document.getElementById('diccionStatusPill');
+      const feedbackEl = document.getElementById('diccionClinicalFeedback');
+
+      panel.classList.remove('hidden', 'border-emerald-300', 'bg-emerald-50/50', 'border-amber-300', 'bg-amber-50/50');
+      scoreEl.textContent = `${score}%`;
+      document.getElementById('diccionWordBreakdown').innerHTML = breakdownHTML.join('');
+      document.getElementById('diccionTranscriptText').textContent = `"${transcript}"`;
+
+      if (score >= 85) {
+        panel.classList.add('border-emerald-300', 'bg-emerald-50/50');
+        scoreEl.className = 'text-3xl font-extrabold text-emerald-700';
+        pillEl.className = 'px-3.5 py-1.5 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-900';
+        pillEl.textContent = 'Excelente Claridad';
+        feedbackEl.textContent = score === 100
+          ? 'Articulación nítida y ritmo bien controlado. Todas las palabras fueron reconocidas sin ambigüedad.'
+          : `Muy buen resultado. Solo refuerza ligeramente la pronunciación en: "${missedWords.join(', ')}".`;
+      } else {
+        panel.classList.add('border-amber-300', 'bg-amber-50/50');
+        scoreEl.className = 'text-3xl font-extrabold text-amber-700';
+        pillEl.className = 'px-3.5 py-1.5 rounded-xl text-sm font-bold bg-amber-100 text-amber-900';
+        pillEl.textContent = 'Reforzar Articulación';
+        feedbackEl.textContent = `Sugerencia del logopeda: Escucha el botón "Ritmo Lento", haz una breve pausa entre palabras y marca más las consonantes en: "${missedWords.join(', ')}".`;
+      }
+
+      recordPracticeStat('Dicción', item.text, score);
+    }
+
+    /* --- Evaluación Módulo 2: Evocación --- */
+    function evaluateEvocacion(transcript, alternatives) {
+      const item = EVOCACION_ITEMS[currentEvocacionIdx];
+      const elapsedSec = ((Date.now() - evocacionStartTime) / 1000).toFixed(1);
+
+      const allSpokenWords = alternatives
+        .flatMap(alt => normalizeSpanish(alt).split(/\s+/))
+        .filter(Boolean);
+
+      const targetNormalized = item.targets.map(normalizeSpanish);
+      const isSuccess = targetNormalized.some(t => allSpokenWords.some(sw => wordsMatchClinically(t, sw)));
+
+      const panel = document.getElementById('evocacionResultPanel');
+      const title = document.getElementById('evocacionResultTitle');
+      const detail = document.getElementById('evocacionResultDetail');
+      document.getElementById('evocacionTimeTag').textContent = `Tiempo: ${elapsedSec}s`;
+
+      panel.classList.remove('hidden', 'border-emerald-300', 'bg-emerald-50/60', 'border-amber-300', 'bg-amber-50/60');
+
+      if (isSuccess) {
+        panel.classList.add('border-emerald-300', 'bg-emerald-50/60');
+        title.className = 'text-lg font-extrabold text-emerald-800';
+        title.textContent = '✓ ¡Palabra recuperada con precisión!';
+        detail.innerHTML = `Escuchado: <strong>"${transcript}"</strong>. Excelente acceso léxico y articulación.`;
+        recordPracticeStat('Evocación', item.displayAnswer, 100);
+      } else {
+        panel.classList.add('border-amber-300', 'bg-amber-50/60');
+        title.className = 'text-lg font-extrabold text-amber-900';
+        title.textContent = 'Inténtalo de nuevo o usa una pista';
+        detail.innerHTML = `El micrófono escuchó: <strong>"${transcript}"</strong>. Si tienes la palabra en mente pero cuesta articularla, di la primera sílaba despacio.`;
+        recordPracticeStat('Evocación', item.displayAnswer, 50);
+      }
+    }
+
+    /* --- Evaluación Módulo 3: Diálogo --- */
+    function evaluateDialogo(transcript) {
+      const item = DIALOGO_ITEMS[currentDialogoIdx];
+      const wordCount = transcript.trim().split(/\s+/).length;
+      const panel = document.getElementById('dialogoResultPanel');
+      const output = document.getElementById('dialogoTranscriptOutput');
+      const feedback = document.getElementById('dialogoFeedbackText');
+
+      panel.classList.remove('hidden');
+      output.textContent = `"${transcript}"`;
+
+      if (wordCount >= 3) {
+        feedback.textContent = `Buena estructura comunicativa (${wordCount} palabras detectadas). El mensaje se entiende con claridad para un interlocutor real.`;
+        recordPracticeStat('Diálogo', item.role, 95);
+      } else {
+        feedback.textContent = `Se entendió claro ("${transcript}"), aunque fue una respuesta breve. Intenta ampliarla a 3 o 4 palabras usando la estructura sugerida arriba.`;
+        recordPracticeStat('Diálogo', item.role, 75);
+      }
+    }
+
+    /* ==========================================================================
+       8. NAVEGACIÓN DE EJERCICIOS Y PISTAS
+       ========================================================================== */
+    function generateSyllablesAuto(sentence) {
+      // Generador automático de separación rítmica por palabras para frases personalizadas
+      return sentence.trim().split(/\s+/).join('  ·  ');
+    }
+
+    function filterDiccionItems() {
+      const filter = document.getElementById('diccionCategoryFilter').value;
+      const customMapped = customPhrases.map(cp => ({
+        id: cp.id,
+        category: cp.category,
+        isPersonal: true,
+        text: cp.text,
+        syllables: generateSyllablesAuto(cp.text)
+      }));
+
+      const allItems = [...customMapped, ...DEFAULT_DICCION_ITEMS];
+
+      if (filter === 'all') {
+        filteredDiccion = allItems;
+      } else if (filter === 'personal') {
+        filteredDiccion = customMapped.length > 0 ? customMapped : allItems;
+        if (customMapped.length === 0) {
+          showToast('Aún no tienes frases propias guardadas. Mostrando banco general.');
+          document.getElementById('diccionCategoryFilter').value = 'all';
+        }
+      } else {
+        filteredDiccion = allItems.filter(i => i.category === filter);
+      }
+
+      currentDiccionIdx = 0;
+      renderDiccion();
+    }
+
+    function renderDiccion() {
+      const item = filteredDiccion[currentDiccionIdx];
+      if (!item) return;
+      document.getElementById('diccionCounter').textContent = `${currentDiccionIdx + 1} / ${filteredDiccion.length}`;
+      document.getElementById('diccionCategoryBadge').textContent = item.isPersonal
+        ? 'MI FRASE PERSONALIZADA'
+        : (item.category === 'trabajo' ? 'ÁREA PROFESIONAL · ARQUITECTURA' : 'COMUNICACIÓN COTIDIANA');
+      document.getElementById('diccionTargetText').textContent = item.text;
+      document.getElementById('diccionSyllablesText').textContent = item.syllables;
+      document.getElementById('diccionResultPanel').classList.add('hidden');
+    }
+
+    function nextDiccion() {
+      currentDiccionIdx = (currentDiccionIdx + 1) % filteredDiccion.length;
+      renderDiccion();
+    }
+    function prevDiccion() {
+      currentDiccionIdx = (currentDiccionIdx - 1 + filteredDiccion.length) % filteredDiccion.length;
+      renderDiccion();
+    }
+
+    /* Módulo 2 */
+    function renderEvocacion() {
+      const item = EVOCACION_ITEMS[currentEvocacionIdx];
+      document.getElementById('evocacionCounter').textContent = `${currentEvocacionIdx + 1} / ${EVOCACION_ITEMS.length}`;
+      document.getElementById('evocacionContextTag').textContent = item.context;
+      document.getElementById('evocacionPromptText').innerHTML = item.prompt.replace(
+        '_____',
+        '<span id="evocacionBlankSlot" class="inline-block border-b-4 border-blueprint-600 text-blueprint-700 px-3 min-w-[110px]">_____</span>'
+      );
+      document.getElementById('evocacionCuesDisplay').classList.add('hidden');
+      document.getElementById('evocacionCue1Text').classList.add('hidden');
+      document.getElementById('evocacionCue2Text').classList.add('hidden');
+      document.getElementById('evocacionResultPanel').classList.add('hidden');
+      evocacionStartTime = Date.now();
+    }
+
+    function showEvocacionCue(level) {
+      const item = EVOCACION_ITEMS[currentEvocacionIdx];
+      document.getElementById('evocacionCuesDisplay').classList.remove('hidden');
+      if (level === 1) {
+        const c1 = document.getElementById('evocacionCue1Text');
+        c1.textContent = `💡 Contexto: ${item.cue1}`;
+        c1.classList.remove('hidden');
+      } else if (level === 2) {
+        const c2 = document.getElementById('evocacionCue2Text');
+        c2.textContent = `🔤 ${item.cue2}`;
+        c2.classList.remove('hidden');
+      }
+    }
+
+    function revealEvocacionAnswer() {
+      const item = EVOCACION_ITEMS[currentEvocacionIdx];
+      const slot = document.getElementById('evocacionBlankSlot');
+      if (slot) slot.textContent = item.displayAnswer;
+      speakText(item.displayAnswer, 0.85);
+    }
+
+    function nextEvocacion() {
+      currentEvocacionIdx = (currentEvocacionIdx + 1) % EVOCACION_ITEMS.length;
+      renderEvocacion();
+    }
+    function prevEvocacion() {
+      currentEvocacionIdx = (currentEvocacionIdx - 1 + EVOCACION_ITEMS.length) % EVOCACION_ITEMS.length;
+      renderEvocacion();
+    }
+
+    /* Módulo 3 */
+    function renderDialogo() {
+      const item = DIALOGO_ITEMS[currentDialogoIdx];
+      document.getElementById('dialogoCounter').textContent = `${currentDialogoIdx + 1} / ${DIALOGO_ITEMS.length}`;
+      document.getElementById('dialogoRoleTag').textContent = item.role;
+      document.getElementById('dialogoQuestionText').textContent = `"${item.question}"`;
+      document.getElementById('dialogoStructureHint').textContent = item.structure;
+      document.getElementById('dialogoExampleText').textContent = `"${item.example}"`;
+      document.getElementById('dialogoExampleBox').classList.add('hidden');
+      document.getElementById('dialogoResultPanel').classList.add('hidden');
+    }
+
+    function playDialogoQuestion() {
+      const item = DIALOGO_ITEMS[currentDialogoIdx];
+      speakText(item.question, 0.95);
+    }
+
+    function toggleDialogoModel() {
+      document.getElementById('dialogoExampleBox').classList.toggle('hidden');
+    }
+
+    function nextDialogo() {
+      currentDialogoIdx = (currentDialogoIdx + 1) % DIALOGO_ITEMS.length;
+      renderDialogo();
+    }
+    function prevDialogo() {
+      currentDialogoIdx = (currentDialogoIdx - 1 + DIALOGO_ITEMS.length) % DIALOGO_ITEMS.length;
+      renderDialogo();
+    }
+
+    /* ==========================================================================
+       9. GESTIÓN DE VOCABULARIO PERSONALIZADO (MÓDULO 4)
+       ========================================================================== */
+    function addCustomPhrase(e) {
+      e.preventDefault();
+      const input = document.getElementById('customPhraseInput');
+      const category = document.getElementById('customCategoryInput').value;
+      const text = input.value.trim();
+      if (!text) return;
+
+      customPhrases.unshift({
+        id: 'custom_' + Date.now(),
+        text: text,
+        category: category
+      });
+      localStorage.setItem('arquivoz_custom_phrases', JSON.stringify(customPhrases));
+      input.value = '';
+      renderCustomPhrasesList();
+      filterDiccionItems();
+      showToast('Frase guardada y añadida al Módulo 1 (Dicción).');
+    }
+
+    function deleteCustomPhrase(id) {
+      customPhrases = customPhrases.filter(p => p.id !== id);
+      localStorage.setItem('arquivoz_custom_phrases', JSON.stringify(customPhrases));
+      renderCustomPhrasesList();
+      filterDiccionItems();
+      showToast('Frase eliminada.');
+    }
+
+    function renderCustomPhrasesList() {
+      const container = document.getElementById('customPhrasesList');
+      document.getElementById('customCount').textContent = customPhrases.length;
+
+      if (customPhrases.length === 0) {
+        container.innerHTML = `<p class="text-sm text-slate-500 italic bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">No hay frases personalizadas aún. Agrega términos de tu estudio o nombres de familiares arriba.</p>`;
+        return;
+      }
+
+      container.innerHTML = customPhrases.map(item => `
+        <div class="flex items-center justify-between gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-blueprint-700 block">
+              ${item.category === 'trabajo' ? 'Arquitectura / Trabajo' : 'Hogar / Familia'}
+            </span>
+            <span class="text-base font-bold text-slateStudio-900">${item.text}</span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="speakText('${item.text.replace(/'/g, "\\'")}', 0.9)" class="p-2.5 rounded-xl bg-white border border-slate-300 text-blueprint-700 hover:bg-blueprint-50" title="Escuchar">
+              🔊
+            </button>
+            <button onclick="deleteCustomPhrase('${item.id}')" class="p-2.5 rounded-xl bg-white border border-rose-200 text-rose-600 hover:bg-rose-50" title="Eliminar">
+              ✕
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       10. ESTADÍSTICAS Y PROGRESO CLÍNICO
+       ========================================================================== */
+    function recordPracticeStat(moduleLabel, itemLabel, score) {
+      statsData.scores.push(score);
+      if (score >= 90 && !statsData.mastered.includes(itemLabel)) {
+        statsData.mastered.push(itemLabel);
+      }
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      statsData.history.unshift({
+        module: moduleLabel,
+        label: itemLabel,
+        score: score,
+        time: timeStr
+      });
+      if (statsData.history.length > 20) statsData.history.pop();
+
+      localStorage.setItem('arquivoz_stats', JSON.stringify(statsData));
+      updateStatsUI();
+    }
+
+    function updateStatsUI() {
+      const total = statsData.scores.length;
+      document.getElementById('statTotalAttempts').textContent = total;
+      document.getElementById('statMasteredCount').textContent = statsData.mastered.length;
+
+      if (total > 0) {
+        const avg = Math.round(statsData.scores.reduce((a, b) => a + b, 0) / total);
+        document.getElementById('statAvgScore').textContent = `${avg}%`;
+      } else {
+        document.getElementById('statAvgScore').textContent = '--%';
+      }
+
+      const list = document.getElementById('recentHistoryList');
+      if (statsData.history.length === 0) return;
+
+      list.innerHTML = statsData.history.map(h => `
+        <div class="flex items-center justify-between bg-slate-50 px-4 py-3 rounded-xl border border-slate-200">
+          <div class="pr-2">
+            <span class="text-xs font-bold text-blueprint-700 uppercase">${h.module} · ${h.time}</span>
+            <p class="font-semibold text-slateStudio-900 truncate max-w-[220px] sm:max-w-md">${h.label}</p>
+          </div>
+          <span class="px-3 py-1 rounded-lg text-xs font-extrabold ${h.score >= 85 ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
+            ${h.score}%
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function resetStats() {
+      statsData = { scores: [], mastered: [], history: [] };
+      localStorage.setItem('arquivoz_stats', JSON.stringify(statsData));
+      updateStatsUI();
+      document.getElementById('recentHistoryList').innerHTML = `<p class="text-slate-500 italic py-4 text-center bg-slate-50 rounded-xl border border-slate-200">Historial reiniciado.</p>`;
+      showToast('Historial de progreso reiniciado.');
+    }
+
+    /* ==========================================================================
+       11. UTILIDAD DE NOTIFICACIONES (TOAST)
+       ========================================================================== */
+    let toastTimeout = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('hidden');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(hideToast, 4500);
+    }
+    function hideToast() {
+      document.getElementById('toastNotification').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
