@@ -1,0 +1,85 @@
+[
+  {
+    "subCategory": "Repetición Escalonada",
+    "difficulty": 1,
+    "goal": "De palabra a frase corta",
+    "instruction": "Escuche el modelo y repita respetando la separación rítmica.",
+    "prompt": "Plano → El plano nuevo → Revisemos el plano nuevo.",
+    "syllables": "1 palabra → 3 palabras → 4 palabras",
+    "ttsText": "Plano. El plano nuevo. Revisemos el plano nuevo."
+  },
+  {
+    "subCategory": "Repetición Escalonada",
+    "difficulty": 2,
+    "goal": "Frase funcional de 4 a 6 palabras",
+    "instruction": "Repita la oración completa haciendo una pausa ligera después del verbo.",
+    "prompt": "Necesito confirmar las medidas del terreno.",
+    "syllables": "Ne-ce-si-to con-fir-mar / las me-di-das del te-rre-no",
+    "ttsText": "Necesito confirmar las medidas del terreno."
+  },
+  {
+    "subCategory": "Nominación Visual",
+    "difficulty": 1,
+    "goal": "Acceso léxico por estímulo visual",
+    "instruction": "Observe el dibujo técnico y diga en voz alta el nombre del objeto.",
+    "prompt": "¿Qué herramienta de dibujo es esta?",
+    "expectedAnswer": "escuadra",
+    "semanticHint": "Instrumento triangular usado para trazar ángulos rectos.",
+    "phoneticHint": "Es-cua...",
+    "svgIcon": "<svg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'><polygon points='20,100 100,100 20,20' fill='none' stroke='#0284c7' stroke-width='6'/><polygon points='35,85 70,85 35,50' fill='none' stroke='#0284c7' stroke-width='3'/></svg>",
+    "ttsText": "¿Qué herramienta de dibujo es esta?"
+  },
+  {
+    "subCategory": "Nominación Visual",
+    "difficulty": 1,
+    "goal": "Acceso léxico por estímulo visual",
+    "instruction": "Nombre el elemento arquitectónico representado en el esquema.",
+    "prompt": "¿Cómo se llama esta estructura de acceso vertical?",
+    "expectedAnswer": "escalera",
+    "semanticHint": "Permite subir o bajar entre dos niveles o pisos de un edificio.",
+    "phoneticHint": "Es-ca-le...",
+    "svgIcon": "<svg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'><polyline points='15,100 40,100 40,75 65,75 65,50 90,50 90,25 110,25' fill='none' stroke='#0284c7' stroke-width='6'/></svg>",
+    "ttsText": "¿Cómo se llama esta estructura de acceso vertical?"
+  },
+  {
+    "subCategory": "Evocación y Cierre",
+    "difficulty": 2,
+    "goal": "Completamiento semántico",
+    "instruction": "Lea la frase en voz alta y complétela con la palabra lógica.",
+    "prompt": "Para medir la longitud exacta de una pared uso la ______.",
+    "expectedAnswer": "cinta",
+    "semanticHint": "Herramienta enrollable graduada en metros y centímetros.",
+    "phoneticHint": "Cin-ta mé...",
+    "ttsText": "Para medir la longitud exacta de una pared uso la..."
+  },
+  {
+    "subCategory": "Evocación y Cierre",
+    "difficulty": 2,
+    "goal": "Antónimos y contrastes rápidos",
+    "instruction": "Diga la palabra opuesta en voz alta.",
+    "prompt": "Si una pared no es exterior, es ______.",
+    "expectedAnswer": "interior",
+    "semanticHint": "Lo que queda adentro de la construcción.",
+    "phoneticHint": "In-te...",
+    "ttsText": "Si una pared no es exterior, es..."
+  },
+  {
+    "subCategory": "Fluidez Categorial",
+    "difficulty": 2,
+    "type": "fluency_60s",
+    "goal": "Evocación bajo límite de tiempo",
+    "instruction": "Inicie el cronómetro de 60 segundos y mencione en voz alta todos los materiales de construcción que recuerde.",
+    "prompt": "Nombre MATERIALES DE CONSTRUCCIÓN durante 60 segundos",
+    "syllables": "Ej: cemento, arena, hierro, ladrillo, madera...",
+    "ttsText": "Nombre materiales de construcción durante sesenta segundos."
+  },
+  {
+    "subCategory": "Secuencias Automáticas",
+    "difficulty": 1,
+    "goal": "Activación de lenguaje automatizado",
+    "instruction": "Diga la serie completa en voz alta con ritmo constante, sin apresurarse.",
+    "prompt": "Lunes, martes, miércoles, jueves, viernes, sábado, domingo.",
+    "syllables": "Marque cada día con claridad",
+    "ttsText": "Lunes, martes, miércoles, jueves, viernes, sábado, domingo."
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "block": "voz",
+    "subCategory": "Voz Sostenida",
+    "goal": "Tiempo máximo de fonación",
+    "instruction": "Presione Medir Voz Sostenida, tome aire y mantenga una 'A' firme buscando superar los 8 a 10 segundos en zona verde.",
+    "prompt": "Sostener: Aaaaaaaaaaaaaaaaaaaa",
+    "syllables": "Mantenga la barra en color verde",
+    "ttsText": "Aaaaaaaaaa"
+  },
+  {
+    "block": "voz",
+    "subCategory": "Inflexión Tonal",
+    "goal": "Prosodia y modulación",
+    "instruction": "Deslice su voz desde un tono grave hacia uno agudo y vuelva a bajar sin cortar el aire.",
+    "prompt": "Sirena vocal: Mmmm (grave → agudo → grave)",
+    "syllables": "Evitar voz monótona",
+    "ttsText": "Mmmmm"
+  },
+  {
+    "block": "voz",
+    "subCategory": "Proyección Final",
+    "goal": "Evitar caída de volumen al final",
+    "instruction": "Diga la frase manteniendo la misma energía e intensidad en la última palabra que en la primera.",
+    "prompt": "Necesito revisar los planos hoy mismo.",
+    "syllables": "Ne-ce-si-to re-vi-sar los PLA-NOS HOY MIS-MO",
+    "ttsText": "Necesito revisar los planos hoy mismo."
+  },
+  {
+    "block": "articulacion",
+    "subCategory": "Diadococinesia",
+    "goal": "Agilidad articulatoria alternante",
+    "instruction": "Articule las tres sílabas marcando labios (PA), punta de lengua (TA) y velo del paladar (KA). Empiece lento y luego acelere.",
+    "prompt": "PA — TA — KA (5 series)",
+    "syllables": "Labial · Dental · Velar",
+    "ttsText": "Pa. Ta. Ka."
+  },
+  {
+    "block": "articulacion",
+    "subCategory": "Pares Mínimos",
+    "goal": "Precisión fonética en contrastes",
+    "instruction": "Pronuncie ambos pares exagerando la consonante que cambia para diferenciar claramente el significado.",
+    "prompt": "PALA — BALA  |  CASA — TAZA  |  PLANO — GRANO",
+    "syllables": "Contraste oclusivo y vibrante",
+    "ttsText": "Pala, bala. Casa, taza. Plano, grano."
+  },
+  {
+    "block": "articulacion",
+    "subCategory": "Palabras por Sílabas",
+    "goal": "Secuenciación polisilábica",
+    "instruction": "Golpee suavemente la mesa con un dedo en cada sílaba para asegurar que no se omita ningún sonido.",
+    "prompt": "AR-QUI-TEC-TU-RA  |  ES-TRUC-TU-RA  |  PRE-SU-PUES-TO",
+    "syllables": "5 sílabas · 4 sílabas · 4 sílabas",
+    "ttsText": "Arquitectura. Estructura. Presupuesto."
+  },
+  {
+    "block": "articulacion",
+    "subCategory": "Control de Ritmo",
+    "goal": "Pausas respiratorias en frase",
+    "instruction": "Haga una pausa breve en cada barra ( / ) para tomar aire y articular con nitidez.",
+    "prompt": "El diseño estructural / ya está aprobado / por el cliente.",
+    "syllables": "Pausa en cada barra diagonal",
+    "ttsText": "El diseño estructural, ya está aprobado, por el cliente."
+  }
+]

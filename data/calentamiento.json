@@ -1,0 +1,42 @@
+[
+  {
+    "subCategory": "Praxias Orofaciales",
+    "goal": "Movilidad y simetría labial",
+    "instruction": "Frente a un espejo, realice 5 repeticiones lentas sin forzar: protrusión de labios (beso) seguida de sonrisa amplia sin mostrar dientes.",
+    "prompt": "Beso exagerado → Sonrisa amplia (5 veces)",
+    "syllables": "Movilidad labial lenta y simétrica",
+    "ttsText": "Realice cinco repeticiones lentas alternando beso exagerado y sonrisa amplia."
+  },
+  {
+    "subCategory": "Praxias Orofaciales",
+    "goal": "Control y fuerza lingual",
+    "instruction": "Saque la lengua recta hacia afuera, mantenga 2 segundos y llévela hacia la comisura derecha y luego izquierda (5 ciclos).",
+    "prompt": "Lengua afuera → Derecha → Izquierda",
+    "syllables": "Precisión del ápice lingual",
+    "ttsText": "Saque la lengua recta, sostenga dos segundos y muévala hacia cada comisura."
+  },
+  {
+    "subCategory": "Praxias Orofaciales",
+    "goal": "Relajación mandibular",
+    "instruction": "Abra la boca suavemente como en un bostezo controlado y ciérrela despacio sin apretar los dientes (5 veces).",
+    "prompt": "Apertura mandibular suave y cierre lento",
+    "syllables": "Liberar tensión en mandíbula",
+    "ttsText": "Abra la boca suavemente como un bostezo y cierre despacio."
+  },
+  {
+    "subCategory": "Respiración y Soplo",
+    "goal": "Coordinación fonorrespiratoria",
+    "instruction": "Inhale profundo por la nariz en 3 segundos y sople muy fino por la boca durante 6 segundos como moviendo una llama sin apagarla.",
+    "prompt": "Inhalar 3s (nariz) → Soplo fino 6s (boca)",
+    "syllables": "Control del flujo de aire espiratorio",
+    "ttsText": "Tome aire por la nariz en tres segundos y sople suavemente por la boca durante seis segundos."
+  },
+  {
+    "subCategory": "Vocal Sostenida",
+    "goal": "Activación glótica suave",
+    "instruction": "Tome aire cómodo y emita una vocal 'A' suave, estable y sin temblor durante el tiempo que le resulte cómodo.",
+    "prompt": "Aaaaaaaaaa — Oooooooooo — Mmmmmmmmmm",
+    "syllables": "Emisión limpia sin esfuerzo en garganta",
+    "ttsText": "Aaa. Ooo. Mmm."
+  }
+]
