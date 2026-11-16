@@ -37,3 +37,18 @@ Esta carpeta contiene una **app independiente**, no un parche directo del reposi
 - Reconocimiento de voz **opcional** con permiso explícito en cada intento. Según el navegador, el proveedor puede procesar audio en un servidor; no debe anunciarse como privado u offline. Alternativa totalmente offline: escribir o corregir texto y comparar.
 - No se guarda la transcripción ni el audio de reconocimiento en el historial. Grabación para escucharse permanece temporalmente en memoria.
 - Pendiente: pruebas en navegadores/dispositivos y auditoría WCAG con usuarios reales.
+
+## Versión 3 — Transcripción simplificada
+- Se eliminó el comparador de palabras detectadas/no detectadas y su puntuación visual.
+- En cada actividad hay un solo botón **«Pasar mi voz a texto»** y otro para detener la escucha. La transcripción aparece en un cuadro editable, sin juicios sobre pronunciación.
+- Si el navegador no admite reconocimiento o no hay conexión, los ejercicios y la grabación normal siguen disponibles.
+- El reconocimiento puede enviar audio a un servicio externo y no garantiza una transcripción exacta, especialmente con dificultades del habla. Requiere consentimiento antes de cada intento.
+- Para ver los cambios en una PWA ya instalada, actualizar el sitio y su caché del service worker.
+
+
+## Versión 2.3 — Transcripción y coincidencia textual
+- Un botón inicia la transcripción y el texto reconocido aparece automáticamente.
+- En ejercicios con frase modelo fija, se muestra una **coincidencia textual orientativa (%)** calculada localmente. No es precisión de pronunciación, evaluación clínica ni medida objetiva del progreso.
+- Ejercicios con respuestas abiertas solo muestran la transcripción, sin porcentaje.
+- El reconocimiento de voz puede requerir conexión y un servicio del navegador; solo se activa al tocar el botón. No se guarda la transcripción ni el porcentaje.
+- En la práctica clínica y especialmente con afasia/disartria, puede haber errores de reconocimiento aunque la persona se haya expresado correctamente.
