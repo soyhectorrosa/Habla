@@ -3,3 +3,27 @@
 .session-timer{position:sticky;top:0;z-index:5;background:#e4f2ee;border-bottom:2px solid #84aca7;padding:10px max(16px,calc((100vw - 1000px)/2));box-shadow:0 2px 6px #123d5010}.session-timer[hidden]{display:none}.timer-details,.timer-buttons{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.session-timer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.timer-details strong{font-size:1.05rem}.timer-details label{font-size:.85rem}.timer-details select{border-radius:9px;padding:7px;background:#fff;border:1px solid #607e7d}.timer-buttons .simple{padding:7px 11px;min-height:42px}.session-notice{flex-basis:100%;margin:0;color:#124a59;font-weight:650}.session-notice:empty{display:none}.speech-feedback{margin:20px 0;padding:18px;border:1px solid var(--border);border-radius:15px;background:#f6faf9}.speech-feedback h2{font-size:1.05rem}.word-feedback{overflow-wrap:anywhere}.word-feedback p{margin:8px 0}.contrast .session-timer{background:#e2f2ed}.contrast .speech-feedback{background:white}@media(max-width:630px){.session-timer{position:static}.timer-buttons{width:100%}.timer-buttons button{flex:1}}
 
 .transcript-output{background:#fff;border:2px solid var(--border);border-radius:14px;padding:16px;margin-top:12px}.recognized-text{font-size:1.35rem;line-height:1.5;overflow-wrap:anywhere;min-height:2em;margin:8px 0}.match-result{margin:15px 0;padding:15px;border-radius:14px;background:#e4f3ef}.match-result[hidden]{display:none}.match-result p{margin:8px 0}.match-result small{display:block;color:var(--muted)}.match-meter{height:13px;border-radius:9px;background:#cfddda;overflow:hidden;margin-top:9px}.match-meter span{display:block;height:100%;background:#176b67}.contrast .match-result{background:#e2f0ed}
+
+/* HABLA 2.4: controles principales visibles en pantallas pequeñas */
+.practice-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.practice-nav .pill{font-size:.82rem}.activity-number{margin-left:auto;font-weight:700;color:var(--muted)}
+.practice .progressbar{margin:8px 0 12px}.practice .activity{padding:18px}
+.practice .word{font-size:clamp(1.6rem,6vw,3rem);line-height:1.17;margin:15px 0}
+.practice .instruction{margin:10px 0 16px;line-height:1.38}
+.core-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.core-controls .button{padding:12px 6px;min-height:56px;font-size:.95rem}
+.compact-transcript{padding:11px 13px;margin:12px 0;background:#edf5f3;border-radius:12px}
+.transcript-title{font-size:.84rem;color:var(--muted);font-weight:650}
+.compact-transcript .recognized-text{font-size:1.12rem;min-height:0;margin:5px 0;line-height:1.32}
+.compact-transcript .match-result{padding:8px;margin:7px 0 0}
+.score-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.score-line b{font-size:1.28rem}
+.compact-transcript .match-meter{height:8px}
+.compact-transcript .match-result small{font-size:.7rem;margin-top:4px}
+.finish-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.step-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.choices.yes-no{display:flex;flex-wrap:wrap;gap:10px}
+.choice-correct{border:3px solid #187454!important;background:#dff3e7!important}
+.choice-incorrect{border:3px solid #a65a1d!important;background:#fff0de!important}
+.choice-result{font-weight:700;margin:8px 0}.choice-result.is-correct{color:#146448}.choice-result.is-incorrect{color:#8a451b}
+@media(max-width:650px){.topbar{padding:8px 12px;min-height:56px}.brandmark{width:40px;height:40px;font-size:1.4rem}.brand{font-size:1.15rem}.brand small{font-size:.67rem}.head-actions .simple{padding:7px;min-height:42px}.connection{font-size:0}.connection::first-letter{font-size:16px}.session-timer{padding:6px 12px;gap:6px;flex-wrap:nowrap}.timer-details strong{font-size:1rem}.timer-details label{display:none}.timer-buttons{width:auto;gap:5px}.timer-buttons .simple{font-size:.8rem;padding:6px;min-height:39px}.practice .activity{padding:14px}.practice .word{margin:10px 0}.practice .instruction{font-size:.95rem}.footer{padding:12px}.core-controls .button{font-size:.85rem}}
