@@ -28,3 +28,15 @@
 .choice-result{font-weight:700;margin:8px 0}.choice-result.is-correct{color:#146448}.choice-result.is-incorrect{color:#8a451b}
 @media(max-width:650px){.topbar{padding:8px 12px;min-height:56px}.brandmark{width:40px;height:40px;font-size:1.4rem}.brand{font-size:1.15rem}.brand small{font-size:.67rem}.head-actions .simple{padding:7px;min-height:42px}.connection{font-size:0}.connection::first-letter{font-size:16px}.session-timer{padding:6px 12px;gap:6px;flex-wrap:nowrap}.timer-details strong{font-size:1rem}.timer-details label{display:none}.timer-buttons{width:auto;gap:5px}.timer-buttons .simple{font-size:.8rem;padding:6px;min-height:39px}.practice .activity{padding:14px}.practice .word{margin:10px 0}.practice .instruction{font-size:.95rem}.footer{padding:12px}.core-controls .button{font-size:.85rem}}
 \n.transcript-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.transcript-actions .button{font-size:.84rem;padding:8px 10px}.compact-transcript [hidden]{display:none!important}\n
+/* HABLA v13: interfaz centrada en audio y transcripción opcional */
+.recording-active{background:#b42332!important;color:#fff!important;border-color:#8c1925!important;box-shadow:0 0 0 4px #f5cbd0;animation:recordPulse 1.8s ease-in-out infinite}
+@keyframes recordPulse{50%{box-shadow:0 0 0 8px #f5cbd077}}
+.compact-transcript{padding:9px 11px;margin:12px 0}
+.transcript-toggle{display:block;width:100%;text-align:left;min-height:48px}
+#transcriptPanel[hidden]{display:none!important}
+#transcriptPanel{padding:8px 4px}
+.attempt-log p{margin:6px 0;padding:7px 9px;background:#fff;border-radius:9px;overflow-wrap:anywhere}
+.transcript-disclaimer{display:block;color:var(--muted);font-size:.75rem;margin:12px 0 4px}
+.help-actions .syllable-toggle{white-space:nowrap;min-height:48px;padding:9px 14px;flex:0 0 auto}
+@media(max-width:650px){.help-actions{display:flex;flex-wrap:nowrap;overflow-x:auto}.help-actions .syllable-toggle{width:auto}}
+.no-motion .recording-active{animation:none}
