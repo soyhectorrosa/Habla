@@ -65,3 +65,12 @@
 .user-practice #transcriptPanel[hidden]{display:none!important}
 .practice-support .help-actions{margin:8px 0}.practice-support:has(.help-actions:empty){display:none}
 @media(max-width:390px){.practice-model,.user-practice,.practice-support{padding:11px}.practice-controls{gap:5px}.practice-controls .button{padding:8px 2px;font-size:.69rem}}
+
+/* HABLA v20: interfaz compacta sin encabezados redundantes */
+.practice-model,.user-practice,.practice-support{padding:12px 14px;margin:10px 0}
+.practice-model .model-listen{min-height:58px}
+.practice .word{margin:8px 0 12px}
+.practice .activity-status{margin:6px 0 9px;padding:8px 10px}
+.user-practice .practice-controls{margin:0}
+.practice-support .help-actions{margin:0}
+@media(max-width:390px){.practice-model,.user-practice,.practice-support{padding:10px}}
