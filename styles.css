@@ -74,3 +74,7 @@
 .user-practice .practice-controls{margin:0}
 .practice-support .help-actions{margin:0}
 @media(max-width:390px){.practice-model,.user-practice,.practice-support{padding:10px}}
+
+/* HABLA v21: actualización accesible */
+.update-banner{background:#dff4e9;color:#123d48;padding:12px max(18px,calc((100vw - 1000px)/2));display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:2px solid #60a88a}
+.update-banner[hidden]{display:none!important}.update-banner .button{min-height:44px;padding:8px 12px}
