@@ -1,0 +1,66 @@
+[
+  {
+    "subCategory": "Lectura Guiada",
+    "difficulty": 2,
+    "goal": "Fluidez lectora con apoyo rítmico",
+    "instruction": "Lea este párrafo breve en voz alta respetando los signos de puntuación para tomar aire.",
+    "prompt": "Buenos días. Ya revisé la propuesta del proyecto y tengo dos observaciones importantes sobre la iluminación natural.",
+    "syllables": "Pausa en el punto · Pausa en 'y'",
+    "ttsText": "Buenos días. Ya revisé la propuesta del proyecto y tengo dos observaciones importantes sobre la iluminación natural."
+  },
+  {
+    "subCategory": "Comprensión Auditiva",
+    "difficulty": 1,
+    "type": "comprehension",
+    "goal": "Verificación de comprensión rápida",
+    "instruction": "Escuche o lea la afirmación y toque la respuesta correcta.",
+    "prompt": "Una cimentación se construye en el techo de la vivienda.",
+    "options": ["Sí, es correcto", "No, es falso"],
+    "answer": "No, es falso",
+    "ttsText": "Una cimentación se construye en el techo de la vivienda."
+  },
+  {
+    "subCategory": "Comprensión Auditiva",
+    "difficulty": 2,
+    "type": "comprehension",
+    "goal": "Órdenes secuenciales de 2 pasos",
+    "instruction": "Escuche la instrucción con atención y elija qué acción debe hacerse PRIMERO.",
+    "prompt": "Antes de enviar el presupuesto al cliente, revise los costos de materiales.",
+    "options": ["Enviar el presupuesto", "Revisar los costos"],
+    "answer": "Revisar los costos",
+    "ttsText": "Antes de enviar el presupuesto al cliente, revise los costos de materiales."
+  },
+  {
+    "subCategory": "Guiones de Obra y Trabajo",
+    "difficulty": 2,
+    "type": "dialogue",
+    "goal": "Comunicación profesional estructurada",
+    "instruction": "Responda la pregunta usando una frase completa (mínimo 4 palabras).",
+    "prompt": "Pregunta de reunión: ¿Qué necesitamos revisar hoy en el proyecto?",
+    "syllables": "Estructura sugerida: 'Hoy necesitamos revisar [tema] con el equipo.'",
+    "expectedKeywords": ["revisar", "proyecto", "plano", "obra", "medidas", "presupuesto"],
+    "ttsText": "¿Qué necesitamos revisar hoy en el proyecto?"
+  },
+  {
+    "subCategory": "Guiones de Obra y Trabajo",
+    "difficulty": 2,
+    "type": "dialogue",
+    "goal": "Llamada telefónica profesional",
+    "instruction": "Practique este inicio de llamada para ganar seguridad antes de marcar.",
+    "prompt": "Hola, te llamo para confirmar a qué hora nos reunimos mañana.",
+    "syllables": "Ho-la, te lla-mo pa-ra con-fir-mar / a qué ho-ra nos reu-ni-mos ma-ña-na",
+    "expectedKeywords": ["llamo", "confirmar", "hora", "mañana"],
+    "ttsText": "Hola, te llamo para confirmar a qué hora nos reunimos mañana."
+  },
+  {
+    "subCategory": "Conversación Familiar",
+    "difficulty": 1,
+    "type": "dialogue",
+    "goal": "Autonomía en el hogar",
+    "instruction": "Exprese su petición completa con volumen firme hasta el final.",
+    "prompt": "Por favor, pásame mis lentes y el teléfono que están en la mesa.",
+    "syllables": "Por fa-vor, pá-sa-me mis len-tes / y el te-lé-fo-no",
+    "expectedKeywords": ["favor", "lentes", "teléfono", "mesa"],
+    "ttsText": "Por favor, pásame mis lentes y el teléfono que están en la mesa."
+  }
+]
