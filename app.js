@@ -88,7 +88,7 @@ async function record(){
   const recordButton=$('#recordButton');if(recordButton){recordButton.classList.add('recording-active');recordButton.textContent='⏹ Detener grabación'}
   const info=$('#attemptInfo');if(info)info.textContent='Intento '+wordAttempts;
   if(transcriptEnabled)startRecognitionForRecording(true);
-  const b=$('[data-action="record"]');if(b)b.textContent='■ Detener';
+  const b=$('[data-action="record"]');if(b)b.textContent='⏹ Detener grabación';
   notify('Grabando. Pulsa detener cuando termines.');
  }catch{transcribeState('No se pudo acceder al micrófono.');notify('No se pudo grabar. Revisa los permisos.')}
 }
