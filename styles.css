@@ -78,3 +78,22 @@
 /* HABLA v21: actualización accesible */
 .update-banner{background:#dff4e9;color:#123d48;padding:12px max(18px,calc((100vw - 1000px)/2));display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:2px solid #60a88a}
 .update-banner[hidden]{display:none!important}.update-banner .button{min-height:44px;padding:8px 12px}
+
+/* HABLA v22: temporizador compacto, botones siempre en una sola línea */
+.session-timer{flex-wrap:nowrap}
+.timer-details,.timer-buttons{flex-wrap:nowrap;min-width:0}
+.timer-buttons .simple{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:4px;line-height:1.2}
+@media(max-width:650px){
+  .session-timer{gap:8px;padding:7px 10px}
+  .timer-details{flex:0 0 auto}
+  .timer-details strong{white-space:nowrap;font-size:.95rem}
+  .timer-buttons{flex:0 1 auto;width:auto;gap:6px;margin-left:auto}
+  .timer-buttons button{flex:0 0 auto}
+  .timer-buttons .simple{font-size:clamp(.74rem,3.2vw,.9rem);padding:7px 9px;min-height:44px;white-space:nowrap}
+}
+@media(max-width:360px){
+  .session-timer{gap:5px;padding-inline:6px}
+  .timer-buttons{gap:4px}
+  .timer-buttons .simple{padding-inline:6px;font-size:.73rem}
+  .timer-details strong{font-size:.83rem}
+}
