@@ -28,3 +28,12 @@ Esta carpeta contiene una **app independiente**, no un parche directo del reposi
 - No se implementa reconocimiento del habla ni métricas clínicas.
 - Requiere evaluación WCAG 2.2 AA, pruebas manuales con teclado/lector de pantalla, pruebas offline/móviles económicos y pruebas con personas con afasia, apraxia o disartria.
 - Icono SVG del manifiesto: algunos navegadores requieren PNG para instalación completa. Puede agregarse un PNG generado desde el SVG si hace falta.
+
+
+## Versión 2 — Temporizador y feedback visual
+- Temporizador general de sesión, con pausas manuales y automáticas al ocultar la pestaña. Metas **orientativas**, configurables (5, 10, 15, 20 min), sin bloquear ejercicios. No hay una duración universal prescrita: ajustar a la tolerancia y consejo profesional.
+- Historial local de duración por sesión (`habla.sessions`, máximo 100 registros).
+- Comparación textual de palabras detectadas vs. no detectadas; **NO** valida pronunciación, articulación, precisión clínica ni diagnostica. No aplicar puntuaciones clínicas.
+- Reconocimiento de voz **opcional** con permiso explícito en cada intento. Según el navegador, el proveedor puede procesar audio en un servidor; no debe anunciarse como privado u offline. Alternativa totalmente offline: escribir o corregir texto y comparar.
+- No se guarda la transcripción ni el audio de reconocimiento en el historial. Grabación para escucharse permanece temporalmente en memoria.
+- Pendiente: pruebas en navegadores/dispositivos y auditoría WCAG con usuarios reales.
