@@ -30,9 +30,16 @@ function showClue(kind){const a=items[idx];let t=kind==='hintSemantic'?a.semanti
 function speak(textValue){if(!('speechSynthesis' in window)){notify('La lectura de voz no está disponible. Puedes leer o mostrar el texto.');return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(textValue);u.lang='es-NI';u.rate=Number(prefs.speechRate)||.9;const voices=speechSynthesis.getVoices();const v=voices.find(v=>v.lang==='es-NI')||voices.find(v=>v.lang.toLowerCase().startsWith('es'));if(v)u.voice=v;u.onerror=()=>notify('La voz no está disponible ahora. Puedes leer o mostrar el mensaje.');speechSynthesis.speak(u)}catch{notify('No se pudo reproducir la voz.')}}
 function stopAudio(){if(recording&&recording.state==='recording')recording.stop();if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if(recAudio){recAudio.pause();recAudio=null}if(audioURL){URL.revokeObjectURL(audioURL);audioURL=null}}
 async function record(){
- if(recording&&recording.state==='recording'){recording.stop();return}
- if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){notify('Este navegador no permite grabar. Puedes practicar sin grabarte.');return}
+ if(recording&&recording.state==='recording'){
+  transcribeState('Procesando transcripción…');
+  recording.stop();
+  if(recognition){try{recognition.stop()}catch{}}
+  else if(!transcriptionFinal.trim())transcribeState('No se pudo reconocer la voz automáticamente. Puedes intentar transcribir.');
+  return;
+ }
+ if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){notify('Este navegador no permite grabar.');return}
  try{
+  stopRecognition();
   stream=await navigator.mediaDevices.getUserMedia({audio:true});
   recChunks=[];recording=new MediaRecorder(stream);
   recording.ondataavailable=e=>{if(e.data.size)recChunks.push(e.data)};
@@ -46,10 +53,10 @@ async function record(){
   };
   transcriptionFinal='';updateTranscript('',false);
   recording.start();
-  transcribeState('Grabando. Al terminar, toca «Intentar transcripción» y repite la frase.');
+  startRecognitionForRecording(true);
   const b=$('[data-action="record"]');if(b)b.textContent='■ Detener';
   notify('Grabando. Pulsa detener cuando termines.');
- }catch{notify('No se pudo acceder al micrófono. Puedes continuar sin grabarte.')}
+ }catch{transcribeState('No se pudo acceder al micrófono.');notify('No se pudo grabar. Revisa los permisos.')}
 }
 function listen(){if(!audioURL){notify('Primero graba tu voz.');return}if(recAudio)recAudio.pause();recAudio=new Audio(audioURL);recAudio.play().catch(()=>notify('No se pudo reproducir la grabación.'))}
 
@@ -91,30 +98,40 @@ function recognitionControls(active){
  if(retry)retry.disabled=active;
  if(stop)stop.hidden=!active;
 }
-function startRecognitionForRecording(){
- if(recording?.state==='recording'){transcribeState('Primero detén la grabación; luego intenta transcribir.');return}
+function startRecognitionForRecording(automatic=false){
+ if(recording?.state==='recording'&&!automatic){transcribeState('Primero detén la grabación.');return}
  stopRecognition();transcriptionFinal='';updateTranscript('',false);
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){transcribeState('Este navegador no admite transcripción. La grabación sigue disponible.');return}
- if(!navigator.onLine){transcribeState('La transcripción de Chrome necesita conexión.');return}
+ if(!SR){transcribeState('Transcripción no compatible. Puedes escuchar tu grabación.');return}
+ if(!navigator.onLine){transcribeState('La transcripción necesita conexión.');return}
  try{
-  const r=new SR();recognition=r;r.lang='es-ES';r.interimResults=true;r.continuous=false;
-  let best='';
-  r.onstart=()=>{recognitionControls(true);transcribeState('Escuchando. Repite la frase ahora…')};
-  r.onresult=e=>{let interim='';for(let i=0;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)transcriptionFinal+=t+' ';else interim+=t}best=(transcriptionFinal+interim).trim()||best;updateTranscript(best,false)};
+  const r=new SR();recognition=r;r.lang='es-ES';r.interimResults=true;r.continuous=true;
+  let finalParts=new Map(),best='',errorMessage='';
+  r.onstart=()=>{recognitionControls(true);transcribeState(automatic?'Grabando y reconociendo voz…':'Escuchando. Habla ahora…')};
+  r.onresult=e=>{
+   let interim='';
+   for(let i=0;i<e.results.length;i++){
+    const part=e.results[i][0].transcript;
+    if(e.results[i].isFinal)finalParts.set(i,part);else interim+=part+' ';
+   }
+   transcriptionFinal=[...finalParts.values()].join(' ').trim();
+   best=(transcriptionFinal+' '+interim).trim()||best;
+   updateTranscript(best,false);
+  };
   r.onerror=e=>{
-   const messages={'not-allowed':'Chrome no tiene permiso para reconocer voz. Revisa el micrófono.','audio-capture':'No se pudo abrir el micrófono.','network':'Error de conexión al servicio de transcripción.','no-speech':'No se detectó voz. Pulsa intentar de nuevo y habla al comenzar la escucha.','service-not-allowed':'El servicio de transcripción no está disponible.'};
-   transcribeState(messages[e.error]||'No se pudo transcribir. Intenta de nuevo.');
+   const messages={'not-allowed':'Chrome no permitió reconocer voz.','audio-capture':'El micrófono está ocupado. Puedes intentar transcribir después de grabar.','network':'Falló la conexión de transcripción.','no-speech':'No se detectó voz.','service-not-allowed':'Servicio de transcripción no disponible.'};
+   errorMessage=messages[e.error]||'No se pudo transcribir.';
+   transcribeState(errorMessage);
   };
   r.onend=()=>{
    if(recognition!==r)return;
    recognition=null;recognitionControls(false);
-   const text=transcriptionFinal.trim()||best.trim();
-   if(text){updateTranscript(text,true);transcribeState('Texto reconocido.');}
-   else if($('#transcribeState')?.textContent.startsWith('Escuchando'))transcribeState('No se detectó voz. Puedes intentar otra vez.');
+   const recognized=transcriptionFinal.trim()||best.trim();
+   if(recognized){updateTranscript(recognized,true);transcribeState('Transcripción lista.');}
+   else transcribeState(errorMessage||'No se detectó voz. Puedes intentar transcribir otra vez.');
   };
   r.start();
- }catch{recognition=null;recognitionControls(false);transcribeState('Chrome no pudo iniciar la transcripción.');}
+ }catch{recognition=null;recognitionControls(false);transcribeState('No se pudo iniciar la transcripción automática. Puedes intentarla después.')}
 }
 function recognizeSpeech(){startRecognitionForRecording()}
 function stopTranscription(){if(recognition){try{recognition.stop()}catch{}}}
