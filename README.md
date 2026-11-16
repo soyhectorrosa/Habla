@@ -1,29 +1,30 @@
-# ArquiVoz — Herramienta Complementaria de Práctica Logopédica (PWA)
+# HABLA Lite — prototipo funcional PWA
 
-Aplicación web progresiva (PWA) estática, gratuita y de código abierto diseñada como apoyo complementario para la rehabilitación vocal y neurolingüística en adultos tras un ictus (ACV), con enfoque funcional y profesional.
+Web app estática para práctica autónoma del lenguaje en adultos. Usa HTML, CSS, JavaScript y SVG, sin dependencias externas, registro, servidor ni imágenes descargadas. Incluye las 395 actividades del catálogo facilitado. Material pendiente de revisión logopédica: no es tratamiento ni sustituye atención profesional.
 
-> **Aviso Clínico Importante:** Esta herramienta es exclusivamente un recurso de práctica complementaria en casa. **No sustituye** la evaluación, el diagnóstico ni el tratamiento presencial de un logopeda o fonoaudiólogo. Se recomienda que un profesional valide el nivel de dificultad y la secuencia de ejercicios según el cuadro clínico individual.
+## Probar localmente
 
-## Características Principales
+Desde esta carpeta: `python3 -m http.server 8080`, luego visitar `http://localhost:8080` en el navegador. **No abrir index.html por file://**: el catálogo y el service worker requieren HTTP o HTTPS. Para probar desde un móvil, publicar en HTTPS; el acceso al micrófono requiere contexto seguro y permiso del usuario.
 
-- **100% Offline y Privada (Sin Backend):** Funciona sin conexión a internet tras la primera carga. Todos los registros de práctica, configuraciones y frases personalizadas se almacenan exclusivamente en el dispositivo del usuario (`localStorage`).
-- **Tolerante a Pausas (Afasia):** El reconocimiento de voz continuo reanuda automáticamente la captura ante pausas prolongadas de búsqueda léxica sin penalizar el silencio.
-- **Autoevaluación Guiada + Grabación Real:** Permite grabar y escuchar la propia voz para compararla con el modelo, evitando depender de puntuaciones automáticas engañosas.
-- **Catálogo Modular en JSON:** Ejercicios organizados por áreas clínicas (Calentamiento orofacial, Voz y volumen, Articulación, Lenguaje/Léxico y Guiones funcionales) editables sin tocar el código fuente.
-- **Accesibilidad:** Tipografía escalable, modo de alto contraste y selector de variante de español (`es-NI`, `es-MX`, `es-US`, `es-ES`).
-- **Exportación Clínica:** Descarga de historial en formato JSON para compartir el progreso con el terapeuta.
+## Publicar en GitHub Pages
 
-## Estructura del Proyecto
+Esta carpeta contiene una **app independiente**, no un parche directo del repositorio original. Respaldar primero la versión actual. Copiar los archivos de esta carpeta a la raíz de una rama nueva o nuevo repositorio para revisar antes de reemplazar el sitio publicado. GitHub Pages debe servir `index.html` desde la raíz elegida. Revisar su URL de publicación y actualizar el caché `CACHE` en `sw.js` al cambiar versiones.
 
-```text
-/
-├── index.html               # Interfaz principal y modal de configuración
-├── styles.css               # Estilos nativos responsivos y de alto contraste
-├── app.js                   # Lógica clínica, audio y gestión local
-├── manifest.json            # Metadatos PWA para instalación en Android/iOS
-├── sw.js                    # Service Worker para caché offline
-└── data/
-    ├── calentamiento.json
-    ├── voz_articulacion.json
-    ├── lenguaje.json
-    └── funcional.json
+## Funcionalidades
+
+- Inicio simplificado; catálogo 12 áreas y 395 ejercicios; práctica corta guiada.
+- Lectura por voz sintetizada (si la voz está disponible); grabación local temporal (MediaRecorder); pistas escalonadas, respuestas revelables y controles de navegación.
+- Tablero de comunicación con 12 mensajes y pictogramas SVG **integrados en app.js**; también admite texto sin pictogramas y mensajes propios.
+- Ajustes: texto grande, contraste alto, reducción de movimiento, visualización de pictogramas, velocidad de voz.
+- Progreso y favoritos guardados en localStorage, con borrado voluntario. Sin puntuación de pronunciación.
+- App instalable según compatibilidad del navegador; assets precacheados por service worker tras primera carga.
+
+## Limitaciones y validación pendiente
+
+- Los SVG son **íconos provisionales**, no pictogramas validados para comunicación aumentativa. Validar reconocimiento con usuarios reales, sobre todo para conceptos abstractos.
+- Algunas actividades del catálogo tienen consignas genéricas. Revisar por logopeda/fonoaudiólogo antes de ofrecer como material validado.
+- La voz síntesis del sistema puede no estar disponible sin conexión, ni con acento regional. Nunca depender de ella para completar una actividad.
+- MediaRecorder no envía las grabaciones desde el código de HABLA: quedan en memoria y se descartan al cambiar de pantalla o cerrar. En navegadores/sistemas particulares, las garantías de privacidad dependen del entorno del usuario.
+- No se implementa reconocimiento del habla ni métricas clínicas.
+- Requiere evaluación WCAG 2.2 AA, pruebas manuales con teclado/lector de pantalla, pruebas offline/móviles económicos y pruebas con personas con afasia, apraxia o disartria.
+- Icono SVG del manifiesto: algunos navegadores requieren PNG para instalación completa. Puede agregarse un PNG generado desde el SVG si hace falta.
