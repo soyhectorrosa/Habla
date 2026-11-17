@@ -20,5 +20,42 @@ responseMode:'speech',positionStart,positionEnd,
 reviewStatus:'sin-validacion-clinica',sourceBasis:'ASHA: marco articulatorio-cinemático; estímulos propuestos por HABLA, sin validación individual'
 }));
 
-return {SYL,COORDINATION,MOTOR_FAMILIES,MOTOR_LIBRARY};
+const MOTOR_LEVELS=[
+{id:1,label:'Nivel 1',title:'Iniciar el habla',description:'Sonidos, sílabas y palabras breves',icon:'sound'},
+{id:2,label:'Nivel 2',title:'Coordinar posiciones',description:'Contrastes y sílabas cerradas',icon:'repeat'},
+{id:3,label:'Nivel 3',title:'Grupos consonánticos',description:'PL, BR, TR y otras combinaciones',icon:'repeat'},
+{id:4,label:'Nivel 4',title:'Secuencias complejas',description:'Palabras largas y transiciones vocálicas',icon:'sound'},
+{id:5,label:'Nivel 5',title:'Frases y entonación',description:'Habla funcional, pausas y ritmo',icon:'chat'}
+];
+// Rutas orientativas para explorar; NO corresponden a una escala clínica ASHA ni implican dominio.
+const MOTOR_LEVEL_ITEMS=[
+[1,'MA','Inicio bilabial y vocal abierta','inicio','m','a'],
+[1,'PA','Cierre labial y vocal abierta','inicio','p','a'],
+[1,'MAMÁ','Transición bilabial en dos sílabas','inicio','m','a'],
+[1,'TAPA','Sílabas directas con cambio de articulación','inicio',null,null],
+[2,'PA – TA','Cambio bilabial a alveolar','transiciones',null,null],
+[2,'TA – KA','Cambio alveolar a velar','transiciones',null,null],
+[2,'PAN','Sílaba cerrada en nasal','transiciones',null,null],
+[2,'SOL','Sílaba cerrada con consonante final','transiciones',null,null],
+[3,'PLATO','Grupo consonántico PL','complejos',null,null],
+[3,'BRAZO','Grupo consonántico BR','complejos',null,null],
+[3,'TREN','Grupo consonántico TR','complejos',null,null],
+[3,'FRUTA','Grupo consonántico FR','complejos',null,null],
+[4,'AIRE','Transición vocálica AI en palabra','vocales','a','i'],
+[4,'PUERTA','Transición vocálica UE en palabra','vocales','u','e'],
+[4,'REFRIGERADOR','Secuencia polisilábica con cambios articulatorios','complejos',null,null],
+[4,'MEDICAMENTO','Secuencia polisilábica con alternancias','complejos',null,null],
+[5,'Dame agua.','Petición funcional','funcional',null,null],
+[5,'Necesito ayuda.','Petición funcional','funcional',null,null],
+[5,'¿Puedes repetir?','Pregunta cotidiana con entonación','funcional',null,null],
+[5,'Quiero descansar.','Frase funcional con continuidad','funcional',null,null]
+].map(([level,prompt,goal,family,positionStart,positionEnd],i)=>({
+id:'NIVEL-'+String(i+1).padStart(2,'0'),level,family,track:'motor_asha',goal,prompt,
+ttsText:prompt.replace(/ – /g,' '),
+instruction:'Escucha el ejemplo. Puedes practicarlo de nuevo o avanzar a tu ritmo.',
+responseMode:'speech',positionStart,positionEnd,
+reviewStatus:'orientativo-sin-validacion-clinica',
+sourceBasis:'ASHA: principios de aprendizaje motor y práctica articulatorio-cinemática; ejemplos elegidos por HABLA'
+}));
+return {SYL,COORDINATION,MOTOR_FAMILIES,MOTOR_LIBRARY,MOTOR_LEVELS,MOTOR_LEVEL_ITEMS};
 })();
