@@ -128,3 +128,10 @@
  .motor-exercise-item{align-items:flex-start;flex-direction:column;gap:4px}
  .motor-exercise-item span{max-width:100%;text-align:left}
 }
+
+
+/* Pausas de reproducción entre sílabas: controles accesibles y compactos */
+.syllable-pause-label{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.88rem;font-weight:650;color:var(--ink)}
+.syllable-pause-label select{min-height:46px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--ink);padding:7px 10px}
+#clue .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+@media(max-width:390px){.syllable-pause-label{width:100%;justify-content:space-between}}
