@@ -57,5 +57,32 @@ responseMode:'speech',positionStart,positionEnd,
 reviewStatus:'orientativo-sin-validacion-clinica',
 sourceBasis:'ASHA: principios de aprendizaje motor y práctica articulatorio-cinemática; ejemplos elegidos por HABLA'
 }));
-return {SYL,COORDINATION,MOTOR_FAMILIES,MOTOR_LIBRARY,MOTOR_LEVELS,MOTOR_LEVEL_ITEMS};
+
+const VOCAL_TARGETS=[
+['QUIERO','ie','diptongo','Pedir algo'],
+['AGUA','ua','diptongo','Palabra cotidiana'],
+['QUIERO AGUA','ie + ua','dos diptongos','Petición funcional'],
+['PUEDO','ue','diptongo','Pedir o confirmar capacidad'],
+['¿PUEDO TOMAR AGUA?','ue + ua','dos diptongos','Pregunta funcional'],
+['CALIENTE','ie','diptongo','Describir temperatura'],
+['AGUA CALIENTE','ua + ie','dos diptongos','Expresión cotidiana'],
+['FRÍA','í-a','hiato','Contraste vocálico'],
+['AGUA FRÍA','ua + í-a','diptongo e hiato','Expresión cotidiana'],
+['OÍR','o-ír','hiato','Contraste vocálico'],
+['¿ME PUEDES OÍR?','ue + o-ír','diptongo e hiato','Pregunta funcional'],
+['TIENE','ie','diptongo','Verbo frecuente'],
+['BUENO','ue','diptongo','Palabra cotidiana'],
+['AIRE','ai','diptongo','Palabra cotidiana'],
+['PAUSA','au','diptongo','Expresión funcional'],
+['¿QUIERES AGUA?','ie + ua','dos diptongos','Pregunta funcional']
+].map(([prompt,transition,transitionType,goal],i)=>({
+id:'VOCAL-'+String(i+1).padStart(2,'0'),
+track:'motor_asha',family:'vocales',goal,prompt,ttsText:prompt,
+instruction:'Escucha la expresión completa y practícala a tu ritmo.',
+responseMode:'speech',transition,transitionType,
+reviewStatus:'ejemplos-orientativos-sin-validacion-clinica',
+sourceBasis:'ASHA: selección de objetivos funcionales; identificación de diptongos/hiatos por análisis lingüístico'
+}));
+
+return {SYL,COORDINATION,MOTOR_FAMILIES,MOTOR_LIBRARY,MOTOR_LEVELS,MOTOR_LEVEL_ITEMS,VOCAL_TARGETS};
 })();
