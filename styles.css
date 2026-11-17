@@ -110,3 +110,21 @@
 .motor-caveat{font-size:.82rem;color:var(--muted);line-height:1.45;margin:12px 0}
 @media(max-width:650px){.motor-home-grid{grid-template-columns:1fr}.motor-home-grid .card{padding:18px}.motor-position-grid{gap:4px;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.motor-mouth{animation:none!important}}
+
+
+/* HABLA: selector de sesiones y explorador de ejercicios motores. */
+.motor-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}
+.motor-modes .card{min-height:130px;text-align:left;padding:20px}
+.motor-modes .card h2{font-size:1.18rem;line-height:1.25;margin:0 0 8px}
+.motor-modes .card p{font-size:.95rem;line-height:1.4;margin:0;color:var(--muted)}
+.motor-exercise-list{display:grid;gap:9px;margin:16px 0 28px}
+.motor-exercise-item{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;width:100%;border:1px solid var(--border);border-radius:14px;background:var(--card);min-height:60px;padding:12px 15px;color:var(--ink)}
+.motor-exercise-item strong{font-size:1.02rem;min-width:0}
+.motor-exercise-item span{font-size:.82rem;color:var(--muted);text-align:right;max-width:50%}
+.motor-exercise-item:focus-visible{outline:4px solid #e5a33a;outline-offset:3px}
+@media(max-width:650px){
+ .motor-modes{grid-template-columns:1fr}
+ .motor-modes .card{min-height:92px;padding:16px}
+ .motor-exercise-item{align-items:flex-start;flex-direction:column;gap:4px}
+ .motor-exercise-item span{max-width:100%;text-align:left}
+}
