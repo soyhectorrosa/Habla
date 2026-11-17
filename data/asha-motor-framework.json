@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "0.1-draft",
+  "audience": "adult-acquired-apraxia-of-speech",
+  "status": "unvalidated-educational-prototype",
+  "source": "https://www.asha.org/practice-portal/clinical-topics/acquired-apraxia-of-speech/",
+  "disclaimer": "Organización de producto inspirada en principios descritos por ASHA, no protocolo clínico ASHA ni ejercicios individualmente validados.",
+  "families": [
+    {
+      "id": "inicio",
+      "label": "Iniciar el habla",
+      "purpose": "Producción de estímulos cortos",
+      "examples": [
+        {
+          "text": "ma",
+          "pattern": "CV",
+          "target": "transición /m/ a /a/"
+        },
+        {
+          "text": "pa",
+          "pattern": "CV",
+          "target": "transición /p/ a /a/"
+        }
+      ]
+    },
+    {
+      "id": "transiciones",
+      "label": "Coordinar sonidos",
+      "purpose": "Cambios de posición articulatoria en secuencias habladas",
+      "examples": [
+        {
+          "text": "pa-ta",
+          "pattern": "CV-CV",
+          "target": "bilabial a alveolar"
+        },
+        {
+          "text": "ta-ka",
+          "pattern": "CV-CV",
+          "target": "alveolar a velar"
+        }
+      ]
+    },
+    {
+      "id": "vocales",
+      "label": "Unir vocales",
+      "purpose": "Transiciones vocálicas a seleccionar solo cuando son relevantes",
+      "examples": [
+        {
+          "text": "pie",
+          "pattern": "CV",
+          "target": "transición vocálica /je/"
+        },
+        {
+          "text": "aire",
+          "pattern": "V-CV",
+          "target": "transición vocálica /ai̯/"
+        }
+      ]
+    },
+    {
+      "id": "complejos",
+      "label": "Combinar sonidos",
+      "purpose": "Grupos consonánticos y secuencias de mayor complejidad",
+      "examples": [
+        {
+          "text": "plato",
+          "pattern": "CCV-CV",
+          "target": "/pl/"
+        },
+        {
+          "text": "brazo",
+          "pattern": "CCV-CV",
+          "target": "/bɾ/"
+        }
+      ]
+    },
+    {
+      "id": "funcional",
+      "label": "Hablar con claridad",
+      "purpose": "Comunicación cotidiana, prosodia y ritmo",
+      "examples": [
+        {
+          "text": "Dame agua",
+          "pattern": "frase",
+          "target": "petición funcional"
+        },
+        {
+          "text": "Necesito ayuda",
+          "pattern": "frase",
+          "target": "petición funcional"
+        }
+      ]
+    }
+  ],
+  "ui": {
+    "visualAidLabel": "Posición",
+    "visualAidOptional": true,
+    "autogradePronunciation": false,
+    "autoAdvance": false,
+    "retainTools": [
+      "Mis palabras y frases",
+      "Repasar lo que me cuesta",
+      "Mi progreso",
+      "Comunicarme"
+    ]
+  }
+}
