@@ -1,0 +1,35 @@
+name: Modern Web Guidance audit
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  modern-web-guidance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Scan legacy web patterns
+        env:
+          DISABLE_TELEMETRY: '1'
+        run: |
+          npx --yes modern-web-guidance@latest legacy-scan . 2>&1 | tee modern-web-guidance-audit.log
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: modern-web-guidance-report
+          path: modern-web-guidance-audit.log
+          if-no-files-found: warn
