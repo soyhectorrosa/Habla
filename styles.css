@@ -97,3 +97,16 @@
   .timer-buttons .simple{padding-inline:6px;font-size:.73rem}
   .timer-details strong{font-size:.83rem}
 }
+
+
+/* HABLA: familias motoras y ayuda SVG opcional (prototipo educativo). */
+.motor-home-grid{margin-bottom:26px}
+.motor-position{margin-top:12px;border:1px solid var(--border);border-radius:14px;background:#f7faf9;padding:12px}
+.motor-position[hidden]{display:none!important}
+.motor-position-grid{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:8px;align-items:center;text-align:center}
+.motor-position-grid figure{margin:0;min-width:0}
+.motor-position-grid figcaption{font-size:.86rem;font-weight:650;color:var(--ink)}
+.motor-mouth{display:block;width:100%;height:auto;max-width:180px;margin:auto}
+.motor-caveat{font-size:.82rem;color:var(--muted);line-height:1.45;margin:12px 0}
+@media(max-width:650px){.motor-home-grid{grid-template-columns:1fr}.motor-home-grid .card{padding:18px}.motor-position-grid{gap:4px;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.motor-mouth{animation:none!important}}
