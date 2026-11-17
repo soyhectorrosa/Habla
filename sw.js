@@ -1,4 +1,4 @@
-const CACHE='habla-lite-v23-motor';
+const CACHE='habla-lite-v24-motor150';
 const CORE=['./','./index.html','./styles.css','./app.js','./js/content.js','./js/storage.js','./js/updates.js','./manifest.webmanifest','./icons/icon.svg','./icons/icon-192.png','./icons/icon-512.png','./data/catalogo.json'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)))});
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
